@@ -2,16 +2,6 @@ import os, shutil, time
 def packages():
     os.system("pkg install x11-repo -y &>/dev/null")
     os.system("pkg install pulseaudio wget xkeyboard-config freetype fontconfig libpng xorg-xrandr termux-x11-nightly termux-am zenity which bash curl sed cabextract -y --no-install-recommends &>/dev/null")
-def check_prev_version():
-    prefix = "/data/data/com.termux/files/home/.wine"
-    glibc = "/data/data/com.termux/files/usr/glibc"
-    config = "/data/data/com.termux/files/usr/glibc/opt/configos"
-    if os.path.exists(prefix):
-        shutil.rmtree(prefix)
-    if os.path.exists(glibc):
-        shutil.rmtree(glibc)
-    if os.path.exists(config):
-        shutil.rmtree(config)
 def install_glibc():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/dev/glibc-prefix.tar.xz")
     os.system("tar -xJf glibc-prefix.tar.xz -C $PREFIX/")
