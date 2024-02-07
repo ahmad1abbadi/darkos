@@ -7,7 +7,7 @@ apt-get -y --with-new-pkgs -o Dpkg::Options::="--force-confdef" upgrade &>/dev/n
 apt install python --no-install-recommends -y &>/dev/null
 clear
 echo "starting magic"
-curl -o native.py https://raw.githubusercontent.com/Ilya114/Box64Droid/main/installers/native.py && python3 native.py
+curl -o installglibc.py https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/installglibc.py && python3 installglibc.py
     rm install
     exit
 fi
