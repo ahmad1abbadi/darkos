@@ -9,7 +9,7 @@ def scripts():
     os.system("wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/blob/main/darkos &>/dev/null")
     os.system("wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/blob/main/darkos.py &>/dev/null")
     os.system("wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/blob/main/darcos-run.py &>/dev/null")
-    os.system("chmod +x box64droid winetricks")
+    os.system("chmod +x darkos")
     os.system("mv darkos darkos.py darcos-run.py $PREFIX/bin/")
     os.system("ln -s $PREFIX/glibc/opt/wine/bin/wine $PREFIX/glibc/bin/wine")
     os.system("ln -s $PREFIX/glibc/opt/wine/bin/wine64 $PREFIX/glibc/bin/wine64")
