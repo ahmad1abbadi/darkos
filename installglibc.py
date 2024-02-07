@@ -6,9 +6,9 @@ def install_glibc():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/dev/glibc-prefix.tar.xz")
     os.system("tar -xJf glibc-prefix.tar.xz -C $PREFIX/")
 def scripts():
-    os.system("wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/blob/main/darkos &>/dev/null")
-    os.system("wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/blob/main/darkos.py &>/dev/null")
-    os.system("wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/blob/main/run-darkos.py &>/dev/null")
+    os.system("wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/darkos &>/dev/null")
+    os.system("wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/darkos.py &>/dev/null")
+    os.system("wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/run-darkos.py &>/dev/null")
     os.system("chmod +x darkos")
     os.system("mv darkos darkos.py run-darkos.py $PREFIX/bin/")
     os.system("ln -s $PREFIX/glibc/opt/wine/bin/wine $PREFIX/glibc/bin/wine")
