@@ -4,6 +4,7 @@ to
 install:
 ...
 ..
-cd $HOME && rm -rf ~/setup.sh && curl -L https://raw.githubusercontent.com/Pipetto-crypto/androBox/androBoxNew/setup.sh -O && bash setup.sh
+cd $HOME && rm -rf ~/setup.sh && curl -L https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/install.sh?token=GHSAT0AAAAAACMZQGAFVTBJA2M5ONSWXGYKZOD5DZQ -O && bash setup.sh
 
 
+https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/install.sh?token=GHSAT0AAAAAACMZQGAFVTBJA2M5ONSWXGYKZOD5DZQ
