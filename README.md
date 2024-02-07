@@ -4,7 +4,7 @@ to
 install:
 ...
 ..
-cd $HOME && rm -rf ~/setup.sh && curl -L https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/install.sh?token=GHSAT0AAAAAACMZQGAFVTBJA2M5ONSWXGYKZOD5DZQ -O && bash install.sh
+curl -o install (https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/install.sh?token=GHSAT0AAAAAACMZQGAFVTBJA2M5ONSWXGYKZOD5DZQ) && chmod +x install && ./install
 
 
 https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/install.sh?token=GHSAT0AAAAAACMZQGAFVTBJA2M5ONSWXGYKZOD5DZQ
