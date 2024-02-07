@@ -7,9 +7,9 @@ def start_darkos():
     os.system("termux-x11 :0 &>/dev/null &")
     os.system('pulseaudio --start --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" --exit-idle-time=-1 &>/dev/null')
 def check_config():
-    config_folder = "/data/data/com.termux/files/usr/glibc/opt/config"
-    exec(open('/data/data/com.termux/files/usr/glibc/opt/config/darkos.conf').read())
-    exec(open('/data/data/com.termux/files/usr/glibc/opt/config/DXVK_D8VK_HUD.conf').read())
+    config_folder = "/data/data/com.termux/files/usr/glibc/opt"
+    exec(open('/data/data/com.termux/files/usr/glibc/opt/darcos.conf').read())
+    exec(open('/data/data/com.termux/files/usr/glibc/opt/DXVK_D8VK_HUD.conf').read())
 def check_prefix():
     if not os.path.exists("/data/data/com.termux/files/home/.wine"):
         print("Creating prefix")
@@ -44,7 +44,7 @@ def main_menu():
         print("what are you choosing genius")
         main_menu()
     elif choice == "1":
-        os.system("python3 $PREFIX/bin/start-darkos.py")
+        os.system("python3 $PREFIX/bin/run-darkos.py")
         exit()
         os.system("clear")
         print("exit press 1 then enter")
@@ -65,8 +65,12 @@ def main_menu():
         os.system('pkill -f pulseaudio')
         exit()
 if len(sys.argv) < 2:
-elif sys.argv[1] != "" and sys.argv[1] 
-elif sys.argv[1] == "":
+elif sys.argv[1] == "--start":
+    start_darkos()
+    check_config()
+    check_prefix()
+    main_menu()
+elif sys.argv[1] == "1":
     start_darkos()
     check_config()
     check_prefix()
