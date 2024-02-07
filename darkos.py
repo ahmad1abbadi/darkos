@@ -64,7 +64,6 @@ def main_menu():
         os.system('pkill -f "app_process / com.termux.x11"')
         os.system('pkill -f pulseaudio')
         exit()
-if len(sys.argv) < 2:
 elif sys.argv[1] == "--start":
     start_darkos()
     check_config()
