@@ -70,7 +70,7 @@ elif sys.argv[1] == "--start":
     check_config()
     check_prefix()
     main_menu()
-elif sys.argv[1] == "1":
+elif sys.argv[1] == "":
     start_darkos()
     check_config()
     check_prefix()
