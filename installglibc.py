@@ -24,7 +24,7 @@ def storage():
     time.sleep(2)
 os.system("clear")
 print(" DarkOS installation is begining 😉 ")
-print("allow storage permission)
+print("allow storage permission")
 storage()
 print("")
 packages()
