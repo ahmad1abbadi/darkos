@@ -13,22 +13,21 @@ def check_prev_version():
     if os.path.exists(config):
         shutil.rmtree(config)
 def install_glibc():
-    os.system("wget -q --show-progress https://github.com/Ilya114/Box64Droid/releases/download/alpha/glibc-prefix.tar.xz")
+    os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/dev/glibc-prefix.tar.xz")
     os.system("tar -xJf glibc-prefix.tar.xz -C $PREFIX/")
 def scripts():
-    os.system("wget https://raw.githubusercontent.com/Ilya114/Box64Droid/main/scripts/native/box64droid &>/dev/null")
-    os.system("wget https://raw.githubusercontent.com/Ilya114/Box64Droid/main/scripts/native/box64droid.py &>/dev/null")
-    os.system("wget https://raw.githubusercontent.com/Ilya114/Box64Droid/main/scripts/native/start-box64.py &>/dev/null")
-    os.system("wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks &>/dev/null")
+    os.system("wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/blob/main/darkos &>/dev/null")
+    os.system("wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/blob/main/darkos.py &>/dev/null")
+    os.system("wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/blob/main/darcos-run.py &>/dev/null")
     os.system("chmod +x box64droid winetricks")
-    os.system("mv box64droid box64droid.py start-box64.py winetricks $PREFIX/bin/")
+    os.system("mv darkos darkos.py darcos-run.py $PREFIX/bin/")
     os.system("ln -s $PREFIX/glibc/opt/wine/bin/wine $PREFIX/glibc/bin/wine")
     os.system("ln -s $PREFIX/glibc/opt/wine/bin/wine64 $PREFIX/glibc/bin/wine64")
     os.system("ln -s $PREFIX/glibc/opt/wine/bin/wineserver $PREFIX/glibc/bin/wineserver")
     os.system("ln -s $PREFIX/glibc/opt/wine/bin/wineboot $PREFIX/glibc/bin/wineboot")
     os.system("ln -s $PREFIX/glibc/opt/wine/bin/winecfg $PREFIX/glibc/bin/winecfg")
 def clear_waste():
-    os.system("rm glibc-prefix.tar.xz install native.py")
+    os.system("rm glibc-prefix.tar.xz install installglibc.py")
     os.system("clear")
 def storage():
     os.system("termux-setup-storage")
