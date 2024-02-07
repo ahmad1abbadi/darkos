@@ -1,6 +1,6 @@
 import os, time, subprocess
-exec(open('/sdcard/Box64Droid/Box64Droid.conf').read())
-exec(open('/sdcard/Box64Droid/DXVK_D8VK_HUD.conf').read())
+exec(open('/data/data/com.termux/files/usr/glibc/opt/darcos.conf').read())
+exec(open('/data/data/com.termux/files/usr/glibc/opt/DXVK_D8VK_HUD.conf').read())
 os.system("clear")
 res = input("Write need resolution: ")
 if res == "":
