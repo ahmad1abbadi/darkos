@@ -57,7 +57,7 @@ def main_menu():
     elif choice == "2":
         def change_setting():
             os.system("clear")
-            print("Select ⚙️:")
+            print("settings:")
             print("1) update OS")
             print("2) update box version ")
             print("3) activate esync mod")
