@@ -95,7 +95,7 @@ def main_menu():
             os.system("box64 wineserver -k &>/dev/null")
             main_menu()
     elif choice == "2":
-        
+        change_setting()
     elif choice == "3":
         print("")
         print("Stopping Termux-X11...")
