@@ -2,9 +2,7 @@ import os, time, subprocess
 exec(open('/data/data/com.termux/files/usr/glibc/opt/darcos.conf').read())
 exec(open('/data/data/com.termux/files/usr/glibc/opt/DXVK_D8VK_HUD.conf').read())
 os.system("clear")
-res = input("Write need resolution: ")
-if res == "":
-print("Empty resolution!")
+res = input("input resolution: ")
 os.system("python3 $PREFIX/bin/start-box64.py")
 exit()
 os.system("clear")
