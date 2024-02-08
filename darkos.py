@@ -30,6 +30,46 @@ def create_prefix():
     os.system("cp $PREFIX/glibc/opt/Resources/vkd3d-proton2.11/* $HOME/.wine/drive_c/windows/syswow64 && cp $PREFIX/glibc/opt/Resources64/vkd3d-proton2.11/* $HOME/.wine/drive_c/windows/system32")
     print("Done!")
     main_menu()
+def change_setting():
+    os.system("clear")
+    print("settings:")
+    print("1) update OS")
+    print("2) update box version ")
+    print("3) activate esync mod")
+    print("4) debug mod")
+    print("5) recreate prefix")
+    print("6) back")
+    choice = input()
+    if choice != "1" and choice != "2" and choice != "3" and choice != "4" and choice != "5" and choice != "6":
+        print("what are you choosing genius")
+        main_menu()
+    elif choice == "6":
+        main_menu()
+    elif choice == "1":
+        os.system("curl -o install https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/update && chmod +x install && ./install")
+        change_setting()
+    elif choice == "2":
+        os.system("curl -o install https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/update && chmod +x install && ./install")
+        os.system("rm $PREFIX/usr/glibc/bin/box64")
+        os.system("wget https://github.com/ahmad1abbadi/darkos/releases/download/dev/box64.tar.xz")
+        os.system("tar -xJf box64.tar.xz -C $PREFIX/usr/glibc/bin/")
+        change_setting()
+    elif choice == "3":
+        os.system("su -c setenforce 0 &>/dev/null")
+        os.system("sudo mkdir /dev/shm &>/dev/null")
+        os.system("sudo chmod 1777 /dev/shm &>/dev/null")
+        os.system("export WINEESYNC=1")
+        os.system("export WINEESYNC_TERMUX=1")
+        change_setting()
+    elif choice == "4":
+        os.system("clear")
+        print("share log file on our Telegram group ")
+        print("to exit OS press 1 then enter")
+        os.system("BOX86_LOG=1 BOX86_SHOWSEGV=1 BOX86_DYNAREC_LOG=1 BOX86_DYNAREC_MISSING=1 BOX86_DLSYM_ERROR=1 BOX64_LOG=1 BOX64_SHOWSEGV=1 BOX64_DYNAREC_LOG=1 BOX64_DYNAREC_MISSING=1 BOX64_DLSYM_ERROR=1 WINEDEBUG=+err taskset -c 4-7 box64 wine explorer /desktop=shell,800x600 $PREFIX/glibc/opt/7-Zip/7zFM >/sdcard/darkos.log 2>&1 &")
+        os.system("am start -n com.termux.x11/com.termux.x11.MainActivity &>/dev/null")
+    elif choice == "5":
+        recreate_prefix()
+        create_prefix()
 def main_menu():
     os.system("clear")
     print("welcome to darkos")
@@ -55,46 +95,7 @@ def main_menu():
             os.system("box64 wineserver -k &>/dev/null")
             main_menu()
     elif choice == "2":
-        def change_setting():
-            os.system("clear")
-            print("settings:")
-            print("1) update OS")
-            print("2) update box version ")
-            print("3) activate esync mod")
-            print("4) debug mod")
-            print("5) recreate prefix")
-            print("6) back")
-            choice = input()
-            if choice != "1" and choice != "2" and choice != "3" and choice != "4" and choice != "5" and choice != "6":
-                print("what are you choosing genius")
-                main_menu()
-            elif choice == "6":
-                main_menu()
-            elif choice == "1":
-                os.system("curl -o install https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/update && chmod +x install && ./install")
-                change_setting()
-            elif choice == "2":
-                os.system("curl -o install https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/update && chmod +x install && ./install")
-                os.system("rm $PREFIX/usr/glibc/bin/box64")
-                os.system("wget https://github.com/ahmad1abbadi/darkos/releases/download/dev/box64.tar.xz")
-                os.system("tar -xJf box64.tar.xz -C $PREFIX/usr/glibc/bin/")
-                change_setting()
-            elif choice == "3":
-                os.system("su -c setenforce 0 &>/dev/null")
-                os.system("sudo mkdir /dev/shm &>/dev/null")
-                os.system("sudo chmod 1777 /dev/shm &>/dev/null")
-                os.system("export WINEESYNC=1")
-                os.system("export WINEESYNC_TERMUX=1")
-                change_setting()
-            elif choice == "4":
-                os.system("clear")
-                print("share log file on our Telegram group ")
-                print("to exit OS press 1 then enter")
-                os.system("BOX86_LOG=1 BOX86_SHOWSEGV=1 BOX86_DYNAREC_LOG=1 BOX86_DYNAREC_MISSING=1 BOX86_DLSYM_ERROR=1 BOX64_LOG=1 BOX64_SHOWSEGV=1 BOX64_DYNAREC_LOG=1 BOX64_DYNAREC_MISSING=1 BOX64_DLSYM_ERROR=1 WINEDEBUG=+err taskset -c 4-7 box64 wine explorer /desktop=shell,800x600 $PREFIX/glibc/opt/7-Zip/7zFM >/sdcard/darkos.log 2>&1 &")
-                os.system("am start -n com.termux.x11/com.termux.x11.MainActivity &>/dev/null")
-            elif choice == "5":
-                recreate_prefix()
-                create_prefix()
+        
     elif choice == "3":
         print("")
         print("Stopping Termux-X11...")
