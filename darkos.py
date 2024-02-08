@@ -55,6 +55,23 @@ def main_menu():
             os.system("box64 wineserver -k &>/dev/null")
             main_menu()
     elif choice == "2":
+        def change_setting():
+            os.system("clear")
+            print("Select ⚙️:")
+            print("1) update OS")
+            print("2) update box version ")
+            print("3) activate esync mod")
+            print("4) Back")
+            print("")
+            choice = input()
+            if choice != "1" and choice != "2" and choice != "3" and choice != "4":
+                print("Incorrect or empty option!")
+                change_wine_version()
+            elif choice == "4":
+                main_menu()
+            elif choice == "1":
+                
+    elif choice == "2":
         os.system("clear")
         print("Wine will be started with debug info, log will be saved in /sdcard/Box64Droid.log. Send /sdcard/Box64Droid.log in Telegram group if you have black screen or crashed apps/games")
         print("to exit OS press 1 then enter")
