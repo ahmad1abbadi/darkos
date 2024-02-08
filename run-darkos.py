@@ -7,7 +7,7 @@ os.system("clear")
 print("exit type 1")
 os.system("taskset -c 4-7 box64 wine explorer /desktop=shell," + res + " $PREFIX/glibc/opt/7-Zip/7zFM &>/dev/null &")
 os.system("am start -n com.termux.x11/com.termux.x11.MainActivity &>/dev/null")
-stop = input(1)
+stop = input()
 if stop == "1":
     print(" Stopping Wine...")
     os.system("box64 wineserver -k &>/dev/null")
