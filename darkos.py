@@ -73,6 +73,9 @@ def main_menu():
                 os.system("curl -o install https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/update && chmod +x install && ./install")
             elif choice == "2":
                 os.system("rm $PREFIX/usr/glibc/bin/box64")
+                os.system("wget https://github.com/ahmad1abbadi/darkos/releases/download/dev/box64.tar.xz")
+                os.system("tar -xJf box64.tar.xz -C $PREFIX/usr/glibc/bin/")     
+            elif choice == "3":
                 os.system("
     elif choice == "2":
         os.system("clear")
