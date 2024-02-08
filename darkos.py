@@ -7,9 +7,9 @@ def start_darkos():
     os.system("termux-x11 :0 &>/dev/null &")
     os.system('pulseaudio --start --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" --exit-idle-time=-1 &>/dev/null')
 def check_config():
-    config_folder = "/data/data/com.termux/files/usr/glibc/opt"
-    exec(open('/data/data/com.termux/files/usr/glibc/opt/Box64Droid.conf').read())
-    exec(open('/data/data/com.termux/files/usr/glibc/opt/DXVK_D8VK_HUD.conf').read())
+    config_folder = "/data/data/com.termux/files/usr/glibc/opt/config"
+    exec(open('/data/data/com.termux/files/usr/glibc/opt/config/darkos.conf').read())
+    exec(open('/data/data/com.termux/files/usr/glibc/opt/config/DXVK_D8VK_HUD.conf').read())
 def check_prefix():
     if not os.path.exists("/data/data/com.termux/files/home/.wine"):
         print("Creating prefix")
@@ -24,7 +24,7 @@ def create_prefix():
     os.system('WINEDLLOVERRIDES="mscoree=" box64 wine64 wineboot &>/dev/null')
     os.system('cp -r $PREFIX/glibc/opt/Shortcuts/* "$HOME/.wine/drive_c/ProgramData/Microsoft/Windows/Start Menu"')
     os.system("ln -s /sdcard/Download $HOME/.wine/dosdevices/d: &>/dev/null && ln -s /sdcard $HOME/.wine/dosdevices/e: &>/dev/null")
-    print("Installing DXVK, D8VK and vkd3d-proton...")
+    print("Installing DXVK+Zinc...")
     os.system('box64 wine "$PREFIX/glibc/opt/Resources64/Run if you will install on top of WineD3D.bat" &>/dev/null && box64 wine "$PREFIX/glibc/opt/Resources64/DXVK2.3/DXVK2.3.bat" &>/dev/null')
     os.system('box64 wine reg add "HKEY_CURRENT_USER\Software\Wine\DllOverrides" /v d3d12 /d native /f &>/dev/null && box64 wine reg add "HKEY_CURRENT_USER\Software\Wine\DllOverrides" /v d3d12core /d native /f &>/dev/null')
     os.system("cp $PREFIX/glibc/opt/Resources/vkd3d-proton2.11/* $HOME/.wine/drive_c/windows/syswow64 && cp $PREFIX/glibc/opt/Resources64/vkd3d-proton2.11/* $HOME/.wine/drive_c/windows/system32")
