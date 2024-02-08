@@ -76,7 +76,10 @@ def main_menu():
                 os.system("wget https://github.com/ahmad1abbadi/darkos/releases/download/dev/box64.tar.xz")
                 os.system("tar -xJf box64.tar.xz -C $PREFIX/usr/glibc/bin/")     
             elif choice == "3":
-                os.system("
+                os.system("su -c setenforce 0 &>/dev/null")
+                os.system("sudo mkdir /dev/shm &>/dev/null")
+                os.system("sudo chmod 1777 /dev/shm &>/dev/null")
+                
     elif choice == "2":
         os.system("clear")
         print("Wine will be started with debug info, log will be saved in /sdcard/Box64Droid.log. Send /sdcard/Box64Droid.log in Telegram group if you have black screen or crashed apps/games")
