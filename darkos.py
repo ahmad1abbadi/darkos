@@ -66,8 +66,8 @@ def main_menu():
             print("6) back")
             choice = input()
             if choice != "1" and choice != "2" and choice != "3" and choice != "4" and choice != "5" and choice != "6":
-            print("what are you choosing genius")
-            main_menu()
+                print("what are you choosing genius")
+                main_menu()
             elif choice == "6":
                 main_menu()
             elif choice == "1":
