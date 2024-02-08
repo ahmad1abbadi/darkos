@@ -8,7 +8,7 @@ def start_darkos():
     os.system('pulseaudio --start --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" --exit-idle-time=-1 &>/dev/null')
 def check_config():
     config_folder = "/data/data/com.termux/files/usr/glibc/opt"
-    exec(open('/data/data/com.termux/files/usr/glibc/opt/darcos.conf').read())
+    exec(open('/data/data/com.termux/files/usr/glibc/opt/Box64Droid.conf').read())
     exec(open('/data/data/com.termux/files/usr/glibc/opt/DXVK_D8VK_HUD.conf').read())
 def check_prefix():
     if not os.path.exists("/data/data/com.termux/files/home/.wine"):
