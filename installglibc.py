@@ -3,7 +3,7 @@ def packages():
     os.system("pkg install x11-repo -y &>/dev/null")
     os.system("pkg install pulseaudio wget xkeyboard-config freetype fontconfig libpng xorg-xrandr termux-x11-nightly termux-am zenity which bash curl sed cabextract -y --no-install-recommends &>/dev/null")
 def install_glibc():
-    os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/dev/glibc-prefix.tar.xz")
+    os.system("wget -q --show-progress https://github.com/Ilya114/Box64Droid/releases/download/alpha/glibc-prefix.tar.xz")
     os.system("tar -xJf glibc-prefix.tar.xz -C $PREFIX/")
 def scripts():
     os.system("wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/darkos &>/dev/null")
