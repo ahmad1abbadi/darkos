@@ -70,10 +70,14 @@ def main_menu():
             elif choice == "4":
                 main_menu()
             elif choice == "1":
-                
+                os.system("curl -o install https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/update && chmod +x install && ./install")
+            elif choice == "2":
+                os.system("rm $PREFIX/usr/glibc/bin/box64")
+                os.system("
     elif choice == "2":
         os.system("clear")
         print("Wine will be started with debug info, log will be saved in /sdcard/Box64Droid.log. Send /sdcard/Box64Droid.log in Telegram group if you have black screen or crashed apps/games")
+    
         print("to exit OS press 1 then enter")
         os.system("BOX86_LOG=1 BOX86_SHOWSEGV=1 BOX86_DYNAREC_LOG=1 BOX86_DYNAREC_MISSING=1 BOX86_DLSYM_ERROR=1 BOX64_LOG=1 BOX64_SHOWSEGV=1 BOX64_DYNAREC_LOG=1 BOX64_DYNAREC_MISSING=1 BOX64_DLSYM_ERROR=1 WINEDEBUG=+err taskset -c 4-7 box64 wine explorer /desktop=shell,800x600 $PREFIX/glibc/opt/7-Zip/7zFM >/sdcard/darkos.log 2>&1 &")
         os.system("am start -n com.termux.x11/com.termux.x11.MainActivity &>/dev/null")
