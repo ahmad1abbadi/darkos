@@ -1,5 +1,7 @@
 #!/bin/bash
-rm $PREFIX/bin/darkos.py
+rm $PREFIX/bin/darkos.py run-darkos.py darkos
 wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/darkos.py &>/dev/null
-mv darkos.py $PREFIX/bin/
+wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/run-darkos.py &>/dev/null
+wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/darkos &>/dev/null
+mv darkos.py darkos run-darkos.py $PREFIX/bin/
 echo "done"
