@@ -3,5 +3,5 @@ rm $PREFIX/bin/darkos.py
 wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/darkos.py &>/dev/null
 wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/run-darkos.py &>/dev/null
 wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/darkos &>/dev/null
-mv darkos.py $PREFIX/bin/
+mv darkos.py run-darkos.py $PREFIX/bin/
 echo "done"
