@@ -8,6 +8,5 @@ apt install python --no-install-recommends -y &>/dev/null
 clear
 echo "starting magic"
 curl -o installglibc.py https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/installglibc.py && python3 installglibc.py
-    rm install
     exit
 fi
