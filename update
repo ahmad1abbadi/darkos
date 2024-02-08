@@ -1,4 +1,5 @@
 #!/bin/bash
+rm $PREFIX/bin/darkos.py
 wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/darkos.py &>/dev/null
 mv darkos.py $PREFIX/bin/
 echo "done"
