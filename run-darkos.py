@@ -59,7 +59,7 @@ if res == "auto":
         current_resolution = f"{current_resolution_match.group(1)}x{current_resolution_match.group(2)}"
     else:
         current_resolution = "800x600"
-    res = current_resolution
+res = current_resolution
 os.system("taskset -c 4-7 box64 wine64 explorer /desktop=shell," + res + " $PREFIX/glibc/opt/apps/DARKOS_configuration.exe &>/dev/null &")
 os.system("am start -n com.termux.x11/com.termux.x11.MainActivity &>/dev/null")
 os.system("clear")
