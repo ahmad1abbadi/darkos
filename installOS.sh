@@ -1,10 +1,10 @@
 #!/bin/bash
 clear
-echo "Updating termux packages list please wait"
+echo -e "Updating termux packages list please wait\n"
 apt update &>/dev/null
-echo "Upgrading termux packages...this might take some time"
+echo -e "Upgrading termux packages...this might take some time\n"
 apt-get -y --with-new-pkgs -o Dpkg::Options::="--force-confdef" upgrade >/dev/null
-echo "please allow storage permission"
+echo -e "please allow storage permission\n"
 termux-setup-storage
 apt install python --no-install-recommends -y &>/dev/null
 echo "be patient"
