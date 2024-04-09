@@ -1,13 +1,13 @@
-import os, time, shutil, sys, subprocess, urllib.request, urllib.error
-current_version = "0.86"
+import os, time, shutil, sys, subprocess, urllib.request, urllib.error, fnmatch
+current_version = "0.87"
 url = 'https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/currently%20version.txt'
 def remove():
-  folder_path = '/data/data/com.termux/files/home'
-  for filename in os.listdir(folder_path):
-    if filename.endswith('.tar.xz'):
-      file_path = os.path.join(folder_path, filename)
-      os.remove(file_path)
-      print(f'{filename}')
+    folder_path = '/data/data/com.termux/files/home'
+    for filename in os.listdir(folder_path):
+        if fnmatch.fnmatch(filename, '*.tar.xz*'):
+            file_path = os.path.join(folder_path, filename)
+            os.remove(file_path)
+            print(f'{filename} has been deleted.')
 os.system("am start -n com.termux/.HomeActivity")
 os.system("clear")
 os.system("python3 $PREFIX/bin/photo.py")
