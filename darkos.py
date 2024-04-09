@@ -328,8 +328,6 @@ def recreate_prefix_wineAZ():
     print("")
     user_input = input()
     if user_input not in ["1", "2", "3", "4", "5"]:
-        print(f'Error....Please input a valid selection')
-        time.sleep(2)
         change_setting()
     elif user_input == "1":
          shutil.rmtree('/data/data/com.termux/files/usr/glibc/opt/wine/1/.wine')
