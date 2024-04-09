@@ -314,18 +314,23 @@ def recreate_prefix_wineAZ():
     print("select version of wine you want to recreate_prefix:")
     print("")
     if os.path.exists("/data/data/com.termux/files/usr/glibc/opt/wine/1/.wine"):
-        print(" 1) wine 1")
+        print(" 1) remove prefix on container 1")
     if os.path.exists("/data/data/com.termux/files/usr/glibc/opt/wine/2/.wine"):
-        print(" 2) wine 2 ge")
+        print(" 2) remove prefix on container 2 ")
     if os.path.exists("/data/data/com.termux/files/usr/glibc/opt/wine/3/.wine"):
-        print(" 3) wine 3")
-    print("4) back")
+        print(" 3) remove prefix on container 3")
+    if os.path.exists("/data/data/com.termux/files/usr/glibc/opt/wine/4/.wine"):
+        print(" 4) remove prefix on container 4 ")
+    if os.path.exists("/data/data/com.termux/files/usr/glibc/opt/wine/5/.wine"):
+        print(" 5) remove prefix on container 5")
+    print("")
+    print(" else) back to settings menu")
     print("")
     user_input = input()
-    if user_input not in ["1", "2", "3", "4"]:
+    if user_input not in ["1", "2", "3", "4", "5"]:
         print(f'Error....Please input a valid selection')
         time.sleep(2)
-        recreate_prefix_wineAZ()
+        change_setting()
     elif user_input == "1":
          shutil.rmtree('/data/data/com.termux/files/usr/glibc/opt/wine/1/.wine')
          print(f'done')
@@ -336,7 +341,11 @@ def recreate_prefix_wineAZ():
          shutil.rmtree('/data/data/com.termux/files/usr/glibc/opt/wine/3/.wine')
          print(f'done')
     elif user_input == "4":
-        change_setting()      
+         shutil.rmtree('/data/data/com.termux/files/usr/glibc/opt/wine/4/.wine')
+         print(f'done')
+    elif user_input == "5":
+         shutil.rmtree('/data/data/com.termux/files/usr/glibc/opt/wine/5/.wine')
+         print(f'done')
     main_menu()
 def check_config_wine():
     config_folder = "/sdcard/darkos"
