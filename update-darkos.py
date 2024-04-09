@@ -1,14 +1,17 @@
 import os, time, shutil, sys, subprocess, urllib.request, urllib.error
 current_version = "0.86"
 url = 'https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/currently%20version.txt'
+def remove():
+  folder_path = '/path/to/your/folder'
+  for filename in os.listdir(folder_path):
+    if filename.endswith('.tar.xz'):
+      file_path = os.path.join(folder_path, filename)
+      os.remove(file_path)
+      print(f'{filename}')
 os.system("am start -n com.termux/.HomeActivity")
 os.system("clear")
 os.system("python3 $PREFIX/bin/photo.py")
-time.sleep(2)
-def install_mono():
-  os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/mono.tar.xz")
-  os.system("tar -xJf mono.tar.xz")
-  os.remove("mono.tar.xz")
+time.sleep(2)   
 print("")
 print("Shutdown OS....")
 print("")
@@ -21,11 +24,10 @@ try:
     print("update available..... updating......📥")
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/AZ.tar.xz")
     os.system("tar -xJf AZ.tar.xz -C $PREFIX/glibc")
-    os.remove("AZ.tar.xz")
-    install_mono()
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/darkos.tar.xz")
     os.system("tar -xJf darkos.tar.xz -C /sdcard/")
-    os.remove("darkos.tar.xz")
+    os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/update.tar.xz")
+    os.system("tar -xJf update.tar.xz -C /sdcard/")
     os.system("rm $PREFIX/bin/darkos.py")
     os.system("rm $PREFIX/bin/update-darkos.py")
     os.system("rm $PREFIX/bin/run-darkos.py")
@@ -40,6 +42,7 @@ try:
     os.system("wget -O update-darkos.py https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/update-darkos.py")
     os.system("chmod +x darkos")
     os.system("mv update-darkos.py darkos.py run-darkos.py debug-darkos.py setting-darkos.py darkos $PREFIX/bin/")
+    remove()
     print("update completed 🎉")
     print("rebooting")
     time.sleep(3)
