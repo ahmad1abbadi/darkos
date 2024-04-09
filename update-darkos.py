@@ -2,7 +2,7 @@ import os, time, shutil, sys, subprocess, urllib.request, urllib.error
 current_version = "0.86"
 url = 'https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/currently%20version.txt'
 def remove():
-  folder_path = '/path/to/your/folder'
+  folder_path = '/data/data/com.termux/files/home'
   for filename in os.listdir(folder_path):
     if filename.endswith('.tar.xz'):
       file_path = os.path.join(folder_path, filename)
