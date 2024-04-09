@@ -6,6 +6,7 @@ import threading
 import shutil
 import sys, urllib.request, urllib.error
 search_paths = [
+    "/data/data/com.termux/files/usr/glibc/opt/wine/5"
     "/data/data/com.termux/files/usr/glibc/opt/wine/4",
     "/data/data/com.termux/files/usr/glibc/opt/wine/2",
     "/data/data/com.termux/files/usr/glibc/opt/wine/3"
