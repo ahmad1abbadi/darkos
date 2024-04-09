@@ -27,7 +27,7 @@ try:
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/darkos.tar.xz")
     os.system("tar -xJf darkos.tar.xz -C /sdcard/")
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/update.tar.xz")
-    os.system("tar -xJf update.tar.xz -C /sdcard/")
+    os.system("tar -xJf update.tar.xz")
     os.system("rm $PREFIX/bin/darkos.py")
     os.system("rm $PREFIX/bin/update-darkos.py")
     os.system("rm $PREFIX/bin/run-darkos.py")
