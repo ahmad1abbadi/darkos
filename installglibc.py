@@ -8,7 +8,7 @@ def start_darkos():
     os.system('pulseaudio --start --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" --exit-idle-time=-1 &>/dev/null')
     
 def termux_pkg():
-    print("This takes a few minutes its depends on your internet connection")
+    print("This takes a few minutes it depends on your internet connection")
     os.system("pkg install glibc-repo x11-repo -y &>/dev/null")
     print("glibc-repo + x11-repo installed")
     os.system("pkg install pulseaudio patchelf xkeyboard-config freetype fontconfig termux-x11-nightly termux-am zenity which bash curl sed cabextract -y --no-install-recommends &>/dev/null")
