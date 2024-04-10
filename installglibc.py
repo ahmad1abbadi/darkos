@@ -19,6 +19,10 @@ def termux_pkg():
 def install_glibc_AZ():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/glibc-darkos.tar.xz")
     os.system("tar -xJf glibc-darkos.tar.xz -C $PREFIX/")
+def update():
+    os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/update.tar.xz")
+    os.system("tar -xJf update.tar.xz")
+    os.remove("update.tar.xz")
 def mangohud():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/mangohud.tar.xz")
     os.system("tar -xJvvf mangohud.tar.xz --strip-components=6 -C $PREFIX/glibc &>/dev/null")
@@ -131,8 +135,10 @@ install_mono()
 print(" 👣 👣 👣 👣 👣 👣")
 install_wine9()
 print(" 👣 👣 👣 👣 👣 👣 👣")
-scripts()
+update()
 print(" 👣 👣 👣 👣 👣 👣 👣 👣")
+scripts()
+print(" 👣 👣 👣 👣 👣 👣 👣 👣 👣")
 remove()
 print("          Installation finished successfully ")
 print("")
