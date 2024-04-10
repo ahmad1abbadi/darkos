@@ -9,8 +9,8 @@ def start_darkos():
     
 def termux_pkg():
     print("This takes a few minutes its depends on your internet connection")
-    os.system("pkg install x11-repo -y &>/dev/null")
-    print("x11-repo installed")
+    os.system("pkg install glibc-repo x11-repo -y &>/dev/null")
+    print("glibc-repo + x11-repo installed")
     os.system("pkg install pulseaudio patchelf xkeyboard-config freetype fontconfig termux-x11-nightly termux-am zenity which bash curl sed cabextract -y --no-install-recommends &>/dev/null")
     print("pulseaudio + termux-am +........... installed successfully ")
     os.system("pkg install wget make libpng xorg-xrandr cmake unzip p7zip patchelf -y --no-install-recommends &>/dev/null")
