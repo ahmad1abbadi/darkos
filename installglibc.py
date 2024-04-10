@@ -21,7 +21,7 @@ def install_glibc_AZ():
     os.system("tar -xJf glibc-darkos.tar.xz -C $PREFIX/")
 def mangohud():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/mangohud.tar.xz")
-    os.system("tar -xjvvf mangohud.tar.xz --strip-components=6 -C $PREFIX/glibc")
+    os.system("tar -xJvvf mangohud.tar.xz --strip-components=6 -C $PREFIX/glibc")
 def install_AZ():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/AZ.tar.xz")
     os.system("tar -xJf AZ.tar.xz -C $PREFIX/glibc/")
