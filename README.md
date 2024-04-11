@@ -123,6 +123,9 @@ For touch controls Input Bridge app is required.
 * support for non Snapdragon chips
   
 ## Support Darkos
+#
+Big thanks to our testers:
+GhostDz36
 
 #
 Huge thanks to:
