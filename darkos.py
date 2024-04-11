@@ -201,8 +201,8 @@ def edit_file():
         time.sleep(1)
         main_menu()
 def mangohud_vulkan():
-    os.system("rm -rf $PREFIX/glibc/lib/libvulkan.so.1")
-    os.system("ln -s $PREFIX/glibc/lib/libvulkan.so.1.3.276 $PREFIX/glibc/lib/libvulkan.so.1")
+    os.system("apt reinstall vulkan-icd-loader-glibc")
+    print("working...... please wait ")
     os.system("grun -s ldconfig")
 def winetricks():
     os.system("clear")
