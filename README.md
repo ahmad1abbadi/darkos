@@ -22,13 +22,15 @@ curl -o install https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/insta
    To exit **Darkos** and use Termux normally, press '1' within the first 4 seconds. Otherwise, Darkos will start and run Wine + Termux-X11.
    
 # Features:
-1. Gstreamer support, which is required for games like:
+1. Native Gstreamer support, which is required for games like:
 * resident evil 7
 * devil may cry 5
 * amid evil
 2. Dedicated configuration app
+3. Many games will work without altering box64 dynarec settings
 
   And many more, you can discover by your self.
+  
 # Configuration:
 
 ## Box64/Box86 Configuration + Dynarec
