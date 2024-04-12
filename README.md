@@ -51,7 +51,7 @@ This mode enables printing Wine and Box64 debug information to a log file locate
 ## Toggle Mangohud
 Mangohud is an on-screen display (OSD) that shows useful information like FPS, CPU usage, GPU load, and GPU temperature.
 
-Currently, to see GPU load and temperature stats, you need to disable SELinux by running the following command in Termux:
+Currently, to see GPU load and temperature stats, you need to disable SELinux by running the following command in Termux(root is required):
 ```
 su -c setenforce 0
 ```
