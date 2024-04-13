@@ -130,6 +130,7 @@ For touch controls Input Bridge app is required.
 thanks to our testers:
 
 GhostDz36
+caoji080
 
 #
 Huge thanks to:
