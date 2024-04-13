@@ -5,7 +5,7 @@ echo " PRESS 1 TO ENTER SAFE MODE ......."
 read -t 2 -n1 -s key
 
 if [[ "$key" == "1" ]]; then
-    echo "Safe MODE DARKOS.......STARTING"
+    echo " Safe MODE DARKOS.....STARTING"
     termux-x11 :0 &>/dev/null &
     pulseaudio --start --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" --exit-idle-time=-1 &>/dev/null
     sleep 1
