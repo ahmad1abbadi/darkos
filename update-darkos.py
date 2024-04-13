@@ -1,5 +1,5 @@
 import os, time, shutil, sys, subprocess, urllib.request, urllib.error, fnmatch
-current_version = "0.88"
+current_version = "0.87"
 url = 'https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/currently%20version.txt'
 def remove():
     folder_path = '/data/data/com.termux/files/home'
@@ -51,6 +51,9 @@ except urllib.error.HTTPError as e:
     print("no internet connection 😵 rebooting.....")
     time.sleep(2)
   else:
+    os.system("rm $PREFIX/bin/darkos.py")
+    os.system("wget -O darkos.py https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/darkos.py")
+    os.system("mv darkos.py")
     print("no update available ")
     time.sleep(3)
 os.system("python3 $PREFIX/bin/run-darkos.py")
