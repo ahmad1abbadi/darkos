@@ -395,9 +395,6 @@ def change_setting():
         try:
             if latest_version > current_version:
                 print("update available..... updating......📥")
-                os.system("rm $PREFIX/bin/update-darkos.py")
-                os.system("wget -O update-darkos.py https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/update-darkos.py")
-                os.system("mv update-darkos.py $PREFIX/bin/")
                 os.system("python3 $PREFIX/bin/update-darkos.py")
                 time.sleep(3)
                 change_setting()
