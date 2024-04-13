@@ -550,5 +550,4 @@ def main_menu():
         os.system('pkill -f pulseaudio')
         os._exit(0)
 start_darkos()
-check_config_wine()
 main_menu()
