@@ -31,7 +31,7 @@ def load_conf():
         "/sdcard/darkos/darkos_custom.conf"
     ]
     for conf_path in conf_paths:
-        exec(open(conf_path).read(), globals(), globals())
+        exec(open(conf_path).read(), globals())
     os.system("chmod +x $PREFIX/glibc/bin/box86")
     os.system("chmod +x $PREFIX/glibc/bin/box64")
 def create_wine_prefix():
