@@ -38,20 +38,23 @@ def create_wine_prefix():
     if not os.path.exists(f"/data/data/com.termux/files/usr/glibc/opt/wine/{container}/wine/bin/wine64"):
         os.system(f"ln -sf /data/data/com.termux/files/usr/glibc/opt/wine/{container}/wine/bin/wine $PREFIX/glibc/bin/wine64")
         os.system(f"ln -sf /data/data/com.termux/files/usr/glibc/opt/wine/{container}/wine/bin/wine $PREFIX/glibc/opt/wine/{container}/wine/bin/wine64")
-    print("Creating wine prefix 💫")
+    print(" Creating wine prefix 💫")
     os.system(f'WINEDLLOVERRIDES="mscoree=disabled" taskset -c 4-7 box64 wine64 wineboot -u &>/dev/null')
     os.system(f'cp -r $PREFIX/glibc/opt/Startxmenu/* "{wine_prefix}/drive_c/ProgramData/Microsoft/Windows/Start Menu"')
     os.system(f'rm "{wine_prefix}/dosdevices/z:"')
     os.system(f'ln -s /sdcard/Download "{wine_prefix}/dosdevices/o:" &>/dev/null')
     os.system(f'ln -s /sdcard/darkos "{wine_prefix}/dosdevices/e:" &>/dev/null')
     os.system(f'ln -s /data/data/com.termux/files "{wine_prefix}/dosdevices/z:"')
-    print("Installing OS stuff...")
+    print(" Installing OS stuff...")
     os.system(f'box64 wine64 "$PREFIX/glibc/opt/apps/Install OS stuff.bat" &>/dev/null')
-    print("Done!")
-    print("prefix done enjoy 🤪 ")
-    time.sleep(2)
-    os.system("box64 wineserver -k &>/dev/null")
+    print(" Done!")
+    print(" prefix done enjoy 🤪 ")
     time.sleep(1)
+    os.system("box64 wineserver -k &>/dev/null")
+    print(" rebooting")
+    time.sleep(1)
+    subprocess.run(["bash", "darkos"])
+    exit()
 def start_wine():
     global res
     if res == "auto":
@@ -143,14 +146,9 @@ def stop_darkos():
     os.system('pkill -f "app_process / com.termux.x11"')
     os.system('pkill -f pulseaudio')
     print("shutdown........")
-    command = "darkos"
-    bashrc_path = os.path.expanduser('~/.bashrc')
+    os.system("am startservice -a com.termux.service_stop com.termux/.app.TermuxService")
+    os.system("pkill -f com.termux.x11")
     subprocess.run(['am', 'broadcast', '-a', 'com.termux.x11.ACTION_STOP', '-p', 'com.termux.x11'])
-    if os.path.exists(bashrc_path):
-        with open(bashrc_path, 'r') as f:
-            for line in f:
-                if command in line:
-                    subprocess.Popen("sleep 1 ; am startservice -a com.termux.service_stop com.termux/.app.TermuxService", shell=True)
     os._exit(0)
 
 restart_program()
