@@ -5,13 +5,13 @@ import time
 import threading
 import shutil
 import sys, urllib.request, urllib.error
-search_paths = [
-    "/data/data/com.termux/files/usr/glibc/opt/wine/5",
-    "/data/data/com.termux/files/usr/glibc/opt/wine/4",
-    "/data/data/com.termux/files/usr/glibc/opt/wine/2",
-    "/data/data/com.termux/files/usr/glibc/opt/wine/3"
-]
 def extract_and_delete_tar_files():
+    search_paths = [
+        "/data/data/com.termux/files/usr/glibc/opt/wine/5",
+        "/data/data/com.termux/files/usr/glibc/opt/wine/4",
+        "/data/data/com.termux/files/usr/glibc/opt/wine/2",
+        "/data/data/com.termux/files/usr/glibc/opt/wine/3"
+    ]
     for path in search_paths:
         for filename in os.listdir(path):
             if filename.endswith(".tar"):
@@ -22,19 +22,19 @@ def extract_and_delete_tar_files():
                     shutil.rmtree(os.path.join(path, "wine"))
                 subprocess.run(["tar", "-xf", tar_file, "-C", path])
                 os.remove(tar_file)
-extract_and_delete_tar_files()                
-conf_path = "/data/data/com.termux/files/usr/glibc/opt/wine/os.conf"
-conf_res = "/data/data/com.termux/files/usr/glibc/opt/darkos/res.conf"
-exec(open(conf_path).read())
-exec(open(conf_res).read())
-exec(open('/sdcard/darkos/darkos_dynarec.conf').read())
-exec(open('/sdcard/darkos/darkos_dynarec_box86.conf').read())
-exec(open('/sdcard/darkos/darkos_custom.conf').read())
-os.system("chmod +x $PREFIX/glibc/bin/box86")
-os.system("chmod +x $PREFIX/glibc/bin/box64")
-
-### AZ DARK 
-if not os.path.exists(wine_prefix):
+def load_conf():
+    conf_paths = [
+        "/data/data/com.termux/files/usr/glibc/opt/wine/os.conf",
+        "/data/data/com.termux/files/usr/glibc/opt/darkos/res.conf",
+        "/sdcard/darkos/darkos_dynarec.conf",
+        "/sdcard/darkos/darkos_dynarec_box86.conf",
+        "/sdcard/darkos/darkos_custom.conf"
+    ]
+    for conf_path in conf_paths:
+        exec(open(conf_path).read(), globals(), globals())
+    os.system("chmod +x $PREFIX/glibc/bin/box86")
+    os.system("chmod +x $PREFIX/glibc/bin/box64")
+def create_wine_prefix():
     if not os.path.exists(f"/data/data/com.termux/files/usr/glibc/opt/wine/{container}/wine/bin/wine64"):
         os.system(f"ln -sf /data/data/com.termux/files/usr/glibc/opt/wine/{container}/wine/bin/wine $PREFIX/glibc/bin/wine64")
         os.system(f"ln -sf /data/data/com.termux/files/usr/glibc/opt/wine/{container}/wine/bin/wine $PREFIX/glibc/opt/wine/{container}/wine/bin/wine64")
@@ -54,23 +54,24 @@ if not os.path.exists(wine_prefix):
     time.sleep(1)
     subprocess.run(["bash", "darkos"])
     exit()
-if res == "auto":
-    xrandr_output = os.popen('xrandr').read()
-    current_resolution_match = re.search(r'current\s+(\d+) x (\d+)', xrandr_output)
-    if current_resolution_match:
-        current_resolution = f"{current_resolution_match.group(1)}x{current_resolution_match.group(2)}"
-    else:
-        current_resolution = "800x600"
-    res = current_resolution
-os.system("taskset -c 4-7 box64 wine64 explorer /desktop=shell," + res + " $PREFIX/glibc/opt/apps/DARKOS_configuration.exe &>/dev/null &")
-os.system("am start -n com.termux.x11/com.termux.x11.MainActivity &>/dev/null")
-os.system("clear")
-os.system("python3 $PREFIX/bin/photo.py")
-print("")
-print("DARK OS is running......")
-print("")
-print("to SHUTDOWN.. it Press 1 or anything else to REBOOT..")
-
+def start_wine():
+    global res
+    if res == "auto":
+        xrandr_output = os.popen('xrandr').read()
+        current_resolution_match = re.search(r'current\s+(\d+) x (\d+)', xrandr_output)
+        if current_resolution_match:
+            current_resolution = f"{current_resolution_match.group(1)}x{current_resolution_match.group(2)}"
+        else:
+            current_resolution = "800x600"
+        res = current_resolution
+    os.system("taskset -c 4-7 box64 wine64 explorer /desktop=shell," + res + " $PREFIX/glibc/opt/apps/DARKOS_configuration.exe &>/dev/null &")
+    os.system("am start -n com.termux.x11/com.termux.x11.MainActivity &>/dev/null")
+    os.system("clear")
+    os.system("python3 $PREFIX/bin/photo.py")
+    print("")
+    print("DARK OS is running......")
+    print("")
+    print("to SHUTDOWN.. it Press 1 or anything else to REBOOT..")
 def restart_wine():
     while True:
         file_path = "/data/data/com.termux/files/usr/glibc/opt/darkos/file.reboot"
@@ -79,7 +80,7 @@ def restart_wine():
         os.system("box64 wineserver -k &>/dev/null")
         print("Restarting WINE")
         os.system(f"touch {file_path}")
-        os.system("python3 $PREFIX/bin/run-darkos.py") 
+        restart_program() 
 def update_wine():
     while True:
         file_path = "/data/data/com.termux/files/usr/glibc/opt/darkos/file.update"
@@ -88,7 +89,8 @@ def update_wine():
         os.system("box64 wineserver -k &>/dev/null")
         print("Restarting WINE")
         os.system(f"touch {file_path}")
-        os.system("python3 $PREFIX/bin/update-darkos.py")  
+        os.system("python3 $PREFIX/bin/update-darkos.py")
+        exit()
 def shutdown_wine():
     while True:
         file_path = "/data/data/com.termux/files/usr/glibc/opt/darkos/file.shutdown"
@@ -99,8 +101,8 @@ def shutdown_wine():
         os.system('pkill -f pulseaudio')
         print("shutdown........")
         os.system(f"touch {file_path}")
-        os.system("am startservice -a com.termux.service_stop com.termux/.app.TermuxService")
         subprocess.run(['am', 'broadcast', '-a', 'com.termux.x11.ACTION_STOP', '-p', 'com.termux.x11'])
+        os._exit(0)
 def debug_wine():
     while True:
         file_path = "/data/data/com.termux/files/usr/glibc/opt/darkos/file.debug"
@@ -110,6 +112,7 @@ def debug_wine():
         print("Restarting WINE")
         os.system(f"touch {file_path}")
         os.system("python3 $PREFIX/bin/debug-darkos.py")
+        exit()
 def settings_wine():
     while True:
         file_path = "/data/data/com.termux/files/usr/glibc/opt/darkos/file.setting"
@@ -122,25 +125,35 @@ def settings_wine():
         os.system("am start -n com.termux/.app.TermuxActivity &>/dev/null")
         subprocess.run(["bash", "install.sh"])
         time.sleep(1)
-        os.system("python3 $PREFIX/bin/run-darkos.py") 
+        restart_program() 
 def stop_wine():
-    stop = input()
-    if stop != "1":
-        print("")
-        print("Rebooting.........")
-        os.system("box64 wineserver -k &>/dev/null")
-        time.sleep(1)
-        os.system("python3 $PREFIX/bin/run-darkos.py")
-    elif stop == "1":
-        os.system("box64 wineserver -k")
-        os.system('pkill -f "app_process / com.termux.x11"')
-        os.system('pkill -f pulseaudio')
-        print("shutdown........")
-        time.sleep(1)
-        os.system("am startservice -a com.termux.service_stop com.termux/.app.TermuxService")
-        subprocess.run(['am', 'broadcast', '-a', 'com.termux.x11.ACTION_STOP', '-p', 'com.termux.x11'])
-        
-        
+    while True:
+        stop = input()
+        if stop != "1":
+            print("")
+            print("Rebooting.........")
+            os.system("box64 wineserver -k &>/dev/null")
+            time.sleep(1)
+            restart_program() 
+        elif stop == "1":
+            os.system("box64 wineserver -k")
+            os.system('pkill -f "app_process / com.termux.x11"')
+            os.system('pkill -f pulseaudio')
+            print("shutdown........")
+            time.sleep(1)
+            subprocess.run(['am', 'broadcast', '-a', 'com.termux.x11.ACTION_STOP', '-p', 'com.termux.x11'])
+            os._exit(0)
+def restart_program():
+    extract_and_delete_tar_files()                
+    load_conf()
+    if not os.path.exists(wine_prefix):
+        create_wine_prefix()
+        extract_and_delete_tar_files()                
+        load_conf()
+    start_wine()
+
+restart_program()
+
 thread1 = threading.Thread(target=restart_wine)
 thread2 = threading.Thread(target=stop_wine)
 thread3 = threading.Thread(target=update_wine)
