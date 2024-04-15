@@ -94,6 +94,7 @@ def shutdown_wine():
         file_path = "/data/data/com.termux/files/usr/glibc/opt/darkos/file.shutdown"
         while os.path.exists(file_path):
             time.sleep(1) 
+        os.system(f"touch {file_path}")
         stop_darkos()
 def debug_wine():
     while True:
@@ -142,7 +143,6 @@ def stop_darkos():
     os.system('pkill -f "app_process / com.termux.x11"')
     os.system('pkill -f pulseaudio')
     print("shutdown........")
-    os.system(f"touch {file_path}")
     command = "darkos"
     bashrc_path = os.path.expanduser('~/.bashrc')
     subprocess.run(['am', 'broadcast', '-a', 'com.termux.x11.ACTION_STOP', '-p', 'com.termux.x11'])
