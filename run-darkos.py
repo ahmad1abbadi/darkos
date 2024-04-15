@@ -49,10 +49,11 @@ if not os.path.exists(wine_prefix):
     os.system(f'box64 wine64 "$PREFIX/glibc/opt/apps/Install OS stuff.bat" &>/dev/null')
     print("Done!")
     print("prefix done enjoy 🤪 ")
-    time.sleep(3)
+    time.sleep(2)
     os.system("box64 wineserver -k &>/dev/null")
-    os.system("python3 $PREFIX/bin/run-darkos.py") 
-
+    os.sleep(1)
+    subprocess.run(["bash", "darkos"])
+    exit()
 if res == "auto":
     xrandr_output = os.popen('xrandr').read()
     current_resolution_match = re.search(r'current\s+(\d+) x (\d+)', xrandr_output)
