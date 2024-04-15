@@ -31,7 +31,7 @@ def load_conf():
         "/sdcard/darkos/darkos_custom.conf"
     ]
     for conf_path in conf_paths:
-        exec(open(conf_path).read(), globals())
+        exec(open(conf_path).read(), globals(), globals())
     os.system("chmod +x $PREFIX/glibc/bin/box86")
     os.system("chmod +x $PREFIX/glibc/bin/box64")
 def create_wine_prefix():
@@ -52,6 +52,8 @@ def create_wine_prefix():
     time.sleep(2)
     os.system("box64 wineserver -k &>/dev/null")
     time.sleep(1)
+    subprocess.run(["bash", "darkos"])
+    exit()
 def start_wine():
     global res
     if res == "auto":
@@ -94,8 +96,13 @@ def shutdown_wine():
         file_path = "/data/data/com.termux/files/usr/glibc/opt/darkos/file.shutdown"
         while os.path.exists(file_path):
             time.sleep(1) 
+        os.system("box64 wineserver -k")
+        os.system('pkill -f "app_process / com.termux.x11"')
+        os.system('pkill -f pulseaudio')
+        print("shutdown........")
         os.system(f"touch {file_path}")
-        stop_darkos()
+        os.system("am startservice -a com.termux.service_stop com.termux/.app.TermuxService")
+        subprocess.run(['am', 'broadcast', '-a', 'com.termux.x11.ACTION_STOP', '-p', 'com.termux.x11'])
 def debug_wine():
     while True:
         file_path = "/data/data/com.termux/files/usr/glibc/opt/darkos/file.debug"
@@ -119,7 +126,7 @@ def settings_wine():
         subprocess.run(["bash", "install.sh"])
         time.sleep(1)
         restart_program() 
-def input_action():
+def stop_wine():
     while True:
         stop = input()
         if stop != "1":
@@ -129,7 +136,13 @@ def input_action():
             time.sleep(1)
             restart_program() 
         elif stop == "1":
-            stop_darkos()
+            os.system("box64 wineserver -k")
+            os.system('pkill -f "app_process / com.termux.x11"')
+            os.system('pkill -f pulseaudio')
+            print("shutdown........")
+            time.sleep(1)
+            os.system("am startservice -a com.termux.service_stop com.termux/.app.TermuxService")
+            subprocess.run(['am', 'broadcast', '-a', 'com.termux.x11.ACTION_STOP', '-p', 'com.termux.x11'])
 def restart_program():
     extract_and_delete_tar_files()                
     load_conf()
@@ -138,25 +151,11 @@ def restart_program():
         extract_and_delete_tar_files()                
         load_conf()
     start_wine()
-def stop_darkos():
-    os.system("box64 wineserver -k")
-    os.system('pkill -f "app_process / com.termux.x11"')
-    os.system('pkill -f pulseaudio')
-    print("shutdown........")
-    command = "darkos"
-    bashrc_path = os.path.expanduser('~/.bashrc')
-    subprocess.run(['am', 'broadcast', '-a', 'com.termux.x11.ACTION_STOP', '-p', 'com.termux.x11'])
-    if os.path.exists(bashrc_path):
-        with open(bashrc_path, 'r') as f:
-            for line in f:
-                if command in line:
-                    subprocess.Popen("sleep 1 ; am startservice -a com.termux.service_stop com.termux/.app.TermuxService", shell=True)
-    os._exit(0)
 
 restart_program()
 
 thread1 = threading.Thread(target=restart_wine)
-thread2 = threading.Thread(target=input_action)
+thread2 = threading.Thread(target=stop_wine)
 thread3 = threading.Thread(target=update_wine)
 thread4 = threading.Thread(target=settings_wine)
 thread5 = threading.Thread(target=debug_wine)
