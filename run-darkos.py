@@ -101,8 +101,8 @@ def shutdown_wine():
         os.system('pkill -f pulseaudio')
         print("shutdown........")
         os.system(f"touch {file_path}")
+        os.system("am startservice -a com.termux.service_stop com.termux/.app.TermuxService")
         subprocess.run(['am', 'broadcast', '-a', 'com.termux.x11.ACTION_STOP', '-p', 'com.termux.x11'])
-        os._exit(0)
 def debug_wine():
     while True:
         file_path = "/data/data/com.termux/files/usr/glibc/opt/darkos/file.debug"
@@ -141,8 +141,8 @@ def stop_wine():
             os.system('pkill -f pulseaudio')
             print("shutdown........")
             time.sleep(1)
+            os.system("am startservice -a com.termux.service_stop com.termux/.app.TermuxService")
             subprocess.run(['am', 'broadcast', '-a', 'com.termux.x11.ACTION_STOP', '-p', 'com.termux.x11'])
-            os._exit(0)
 def restart_program():
     extract_and_delete_tar_files()                
     load_conf()
