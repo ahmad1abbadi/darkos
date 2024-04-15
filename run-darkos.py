@@ -52,8 +52,6 @@ def create_wine_prefix():
     time.sleep(2)
     os.system("box64 wineserver -k &>/dev/null")
     time.sleep(1)
-    subprocess.run(["bash", "darkos"])
-    exit()
 def start_wine():
     global res
     if res == "auto":
