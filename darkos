@@ -1,45 +1,43 @@
-#!/bin/bash
-clear
-python3 $PREFIX/bin/photo.py $@
-echo " PRESS 1 TO ENTER SAFE MODE ......."
-read -t 2 -n1 -s key
+#!/data/data/com.termux/files/usr/bin/env python3
+import os
+import subprocess
+import sys
+import urllib.request
 
-if [[ "$key" == "1" ]]; then
-    echo " Safe MODE DARKOS.....STARTING"
-    termux-x11 :0 &>/dev/null &
-    pulseaudio --start --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" --exit-idle-time=-1 &>/dev/null
-    sleep 1
-    python3 $PREFIX/bin/darkos.py $@
-    exit 0
-elif [[ "$key" == " " ]]; then
-    echo " Booting DARKOS 🖤"
-fi
 
-old_version="0.88"
-new_version=$(curl -s https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/currently%20version.txt)
+os.system("clear")
+os.system("python3 $PREFIX/bin/photo.py")
+print(" PRESS 1 TO ENTER SAFE MODE .......")
+key = subprocess.getoutput("bash -c 'read -t 2 -n1 -s key ; echo $key'")
+if key == 1:
+    print(" Safe MODE DARKOS.....STARTING")
+    subprocess.Popen('termux-x11 :0', shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.run('pulseaudio --start --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1"', shell=True)
+    subprocess.run('python3 $PREFIX/bin/darkos.py' + ' '.join(sys.argv[1:]) , shell=True)
+    os._exit(0)
+print(" Booting DARKOS 🖤")
 
-if ping -q -c 1 -W 1 google.com >/dev/null; then
-    echo " Welcome 🤗"
-    if awk 'BEGIN{exit !('$old_version' < '$new_version')}'; then
-        echo ""
-        echo " update available ⏫....to version : $new_version" 
-        sleep 3
-else
-        echo " installed version : $old_version"
-        sleep 1
-    fi
-else
-    echo " no internet connection 😔🛜"
-fi
+old_version = "0.88"
+new_version = urllib.request.urlopen('https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/currently%20version.txt').read().decode('utf-8').strip()
 
-if [[ -v LD_PRELOAD ]]; then
-    unset LD_PRELOAD
-fi
-echo ""
-echo " Booting DARKOS 🖤"
+def check_internet_connection():
+    try:
+        urllib.request.urlopen('http://www.google.com', timeout=1)
+        return True
+    except urllib.request.URLError:
+        return False
 
-termux-x11 :0 &>/dev/null &
-pulseaudio --start --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" --exit-idle-time=-1 &>/dev/null
-sleep 1
-python3 $PREFIX/bin/run-darkos.py $@
+if check_internet_connection():
+    print(" Welcome 🤗")
+    if old_version < new_version:
+        print("")
+        print("update available ⏫....to version:", new_version)
+        time.sleep(1)
+else:
+    print(" no internet connection 😔🛜")
 
+del os.environ['LD_PRELOAD']
+print(" Booting DARKOS 🖤")
+subprocess.Popen('termux-x11 :0', shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+subprocess.run('pulseaudio --start --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1"', shell=True)
+subprocess.run('python3 $PREFIX/bin/run-darkos.py' + ' '.join(sys.argv[1:]) , shell=True)
