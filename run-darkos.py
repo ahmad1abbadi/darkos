@@ -51,7 +51,7 @@ if not os.path.exists(wine_prefix):
     print("prefix done enjoy 🤪 ")
     time.sleep(2)
     os.system("box64 wineserver -k &>/dev/null")
-    os.sleep(1)
+    time.sleep(1)
     subprocess.run(["bash", "darkos"])
     exit()
 if res == "auto":
