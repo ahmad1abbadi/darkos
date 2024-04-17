@@ -536,7 +536,7 @@ def main_menu():
         print(" Restarting.....")
         time.sleep(1)
         print("")
-        subprocess.run(["bash", "darkos"])
+        subprocess.run(["darkos"])
     elif choice == "4":
         print("")
         os.system("clear")

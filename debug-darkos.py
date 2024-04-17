@@ -127,7 +127,7 @@ def reboot():
       os.system('pkill -f "app_process / com.termux.x11"')
       os.system('pkill -f pulseaudio')
       time.sleep(1)
-      subprocess.run(["bash", "darkos"])
+      subprocess.run(["darkos"])
   elif choice == "4":
       os.system("box64 wineserver -k")
       os.system('pkill -f "app_process / com.termux.x11"')
