@@ -43,6 +43,7 @@ def create_wine_prefix():
     os.system(f'cp -r $PREFIX/glibc/opt/Startxmenu/* "{wine_prefix}/drive_c/ProgramData/Microsoft/Windows/Start Menu"')
     os.system(f'rm "{wine_prefix}/dosdevices/z:"')
     os.system(f'ln -s /sdcard/Download "{wine_prefix}/dosdevices/o:" &>/dev/null')
+    os.system(f'ln -s /data/data/com.termux/files/usr/glibc/opt/G_drive "{wine_prefix}/dosdevices/g:" &>/dev/null')
     os.system(f'ln -s /sdcard/darkos "{wine_prefix}/dosdevices/e:" &>/dev/null')
     os.system(f'ln -s /data/data/com.termux/files "{wine_prefix}/dosdevices/z:"')
     print(" Installing OS stuff...")
