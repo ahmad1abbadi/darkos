@@ -41,5 +41,12 @@ echo " Booting DARKOS 🖤"
 termux-x11 :0 &>/dev/null &
 pulseaudio --start --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" --exit-idle-time=-1 &>/dev/null
 sleep 1
-python3 $PREFIX/bin/run-darkos.py $@
+
+windows10="$PREFIX/glibc/opt/darkos/windows_10.txt"
+
+if [ -f "$windows10" ]; then
+    python3 $PREFIX/glibc/opt/scripts/windows_10.py $@
+else
+    python3 $PREFIX/bin/run-darkos.py $@
+fi
 
