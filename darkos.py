@@ -502,11 +502,11 @@ def box_version():
     os.system("chmod +x $PREFIX/glibc/bin/box64") 
     change_setting()
   elif choice == "2":
-    os.system("rm $PREFIX/bin/box64")
+    os.remove("$PREFIX/glibc/bin/box64")
     print("compiling....")
     os.system("apt install cmake-glibc make-glibc python-glibc -y &>/dev/null")
     Compile()
-    os.system("mv //data/data/com.termux/files/home/box64/build/box64 $PREFIX/bin/")
+    os.system("mv //data/data/com.termux/files/home/box64/build/box64 $PREFIX/glibc/bin/")
     os.system("chmod +x $PREFIX/glibc/bin/box64")
     shutil.rmtree('/data/data/com.termux/files/home/box64')
     print("done")
