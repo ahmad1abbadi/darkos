@@ -5,7 +5,7 @@ import time
 import threading
 import shutil
 import sys, urllib.request, urllib.error
-current_version = "0.88"
+current_version = "0.89"
 url = 'https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/currently%20version.txt'
 def start_darkos():
     os.system("clear")
@@ -176,30 +176,7 @@ def main():
             print("🙅‍♂️🛜", e)
         else:
             print("something went wrong please send this error to developer")
-def edit_file():
-    os.system("clear")
-    photo()
-    print("")
-    print("1) performance 🚀")
-    print("2) default 🏍️")
-    print("3) compatibility 🐢")
-    print("")
-    choice = input("Enter your choice: ")
-    config_path_in = "/sdcard/darkos/darkos_dynarec.conf"
-    config_path_out = f"/data/data/com.termux/files/usr/glibc/opt/wine/{choice}/darkos_dynarec.conf"
-    if choice not in ["1", "2", "3"]:
-        print('Error... Please input a valid selection')
-        time.sleep(2)
-        edit_file()
-    else:
-        if os.path.exists(config_path_in):
-            os.remove(config_path_in)
-        shutil.copy(config_path_out, config_path_in)
-        print("changing settings......")
-        time.sleep(1)
-        print("done")
-        time.sleep(1)
-        main_menu()
+
 def mangohud_vulkan():
     os.system("apt reinstall vulkan-icd-loader-glibc")
     print("working...... please wait ")
@@ -356,7 +333,65 @@ def install_wine9():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/wine-default.tar.xz")
     os.system("tar -xJf wine-default.tar.xz -C $PREFIX/glibc/opt/wine/1")
     os.remove("wine-default.tar.xz")
-
+def auto_start():
+    os.system("clear")
+    photo()
+    print(" select what you refer:")
+    print("")
+    print(" 1) turn-on auto start os 👍")
+    print("")
+    print(" 2) turn-off auto start os 👎")
+    print("")
+    print( "else) back to settings menu")
+    choice = input()
+    if choice != "1" and choice != "2":
+        change_setting()
+    elif choice == "1":
+        command = "darkos"
+        bashrc_path = os.path.expanduser('~/.bashrc')
+        command_exists = False
+        if os.path.exists(bashrc_path):
+            with open(bashrc_path, 'r') as f:
+                for line in f:
+                    if command in line:
+                        command_exists = True
+                        print(" auto start os already activated... ")
+                        time.sleep(2)
+                        change_setting()
+        if not command_exists:
+            with open(bashrc_path, 'a') as f:
+                f.write(command + '\n')
+            print(" auto start os activated successfully")
+            time.sleep(2)
+            change_setting()
+    elif choice == "2":
+        command = "darkos"
+        bashrc_path = os.path.expanduser('~/.bashrc')
+        command_exists = False
+        if os.path.exists(bashrc_path):
+            with open(bashrc_path, 'r') as f:
+                lines = f.readlines()
+            with open(bashrc_path, 'w') as f:
+                for line in lines:
+                    if command not in line:
+                        f.write(line)
+            print("Auto start os deactivated successfully")
+            time.sleep(2)
+            change_setting()
+def styles():
+    os.system("clear")
+    photo()
+    print("install styles menu 🏞️")
+    print("1) windows 10 ")
+    print("")
+    print("else) back to settings menu")
+    choice = input()
+    if choice != "1":
+        change_setting()
+    elif choice == "1":
+        os.system("chmod +x $PREFIX/glibc/opt/scripts/install_xfce4.sh")
+        os.system("$PREFIX/glibc/opt/scripts/install_xfce4.sh")
+        exit()
 def change_setting():
     os.system("clear")
     photo()
@@ -365,11 +400,11 @@ def change_setting():
     print("2) Wine manager 🍷")
     print("3) Change box86-box64 version 📥")
     print("4) Delete prefix 🪡")
-    print("5) Fix dynarec setting 🧩")
+    print("5) Change auto start setting 🖱️")
     print("6) Debug mode 🔧")
     print("7) Fix prefix for non wow64 wine ♻️")
     print("8) Boost cpu 🔥 (needed root in some devices)")
-    print("9) Fix mangohud if not compatible with your device 🎭")
+    print("9) Install Styles For Dark Os 🎭")
     print("10) winetricks ⛑️")
     print("else) Back 🔙")
     print("")
@@ -413,12 +448,8 @@ def change_setting():
     elif choice == "6":
         os.system("python3 $PREFIX/bin/debug-darkos.py")
     elif choice == "9":
-        print("fixing......")
-        mangohud_vulkan()
-        time.sleep(2)
-        print("done 👍")
-        time.sleep(1)
-        change_setting()
+        print("")
+        styles()
     elif choice == "r":
         print("to contact developer via telegram channel....(https://t.me/DARKOS4android)")
         back = input("🔙 = 1")
@@ -427,7 +458,7 @@ def change_setting():
     elif choice == "4":
         recreate_prefix_wineAZ()
     elif choice == "5":
-        edit_file()
+        auto_start()
     elif choice == "7":
         recreate_32bit()
     elif choice == "10":
