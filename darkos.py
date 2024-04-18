@@ -5,7 +5,7 @@ import time
 import threading
 import shutil
 import sys, urllib.request, urllib.error
-current_version = "0.89"
+current_version = "0.891"
 url = 'https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/currently%20version.txt'
 def start_darkos():
     os.system("clear")
@@ -495,14 +495,17 @@ def box_version():
   if choice != "1" and choice != "2" and choice != "3":
     change_setting()
   elif choice == "1":
-    os.remove("$PREFIX/glibc/bin/box64")
-    os.remove("$PREFIX/glibc/bin/box86")
+    if os.path.exists("/data/data/com.termux/files/usr/glibc/bin/box64"):
+        os.remove("$PREFIX/glibc/bin/box64")
+    if os.path.exists("/data/data/com.termux/files/usr/glibc/bin/box86"):  
+        os.remove("$PREFIX/glibc/bin/box86")
     os.system("tar -xJf $PREFIX/glibc/opt/box/safe-box.tar.xz -C $PREFIX/glibc/bin/")
     os.system("chmod +x $PREFIX/glibc/bin/box86")
     os.system("chmod +x $PREFIX/glibc/bin/box64") 
     change_setting()
   elif choice == "2":
-    os.remove("$PREFIX/glibc/bin/box64")
+    if os.path.exists("/data/data/com.termux/files/usr/glibc/bin/box64"):
+        os.remove("$PREFIX/glibc/bin/box64")
     print("compiling....")
     os.system("apt install cmake-glibc make-glibc python-glibc -y &>/dev/null")
     Compile()
@@ -514,8 +517,10 @@ def box_version():
     change_setting()
   elif choice == "3":
     os.system("wget https://github.com/ahmad1abbadi/darkos/releases/download/beta/box.tar.xz")
-    os.remove("$PREFIX/glibc/bin/box64")
-    os.remove("$PREFIX/glibc/bin/box86")
+    if os.path.exists("/data/data/com.termux/files/usr/glibc/bin/box64"):
+        os.remove("$PREFIX/glibc/bin/box64")
+    if os.path.exists("/data/data/com.termux/files/usr/glibc/bin/box86"):  
+        os.remove("$PREFIX/glibc/bin/box86")
     os.system("tar -xJf box.tar.xz -C $PREFIX/glibc/bin/")
     os.system("chmod +x $PREFIX/glibc/bin/box86")
     os.system("chmod +x $PREFIX/glibc/bin/box64")
