@@ -135,6 +135,10 @@ GhostDz36, caoji080
 Huge thanks to:
 
 [airidosas252](https://github.com/airidosas252) for his turnip and wine builds.
+#
+Many thanks to:
+
+ILAN12346 for his great work to implement Xinput, Dinput support without root access.
 
 #
 Special thanks to ptitSeb, Maxython, glibc-runner, hardray, Tωaik, zhongerxll and others for help.
