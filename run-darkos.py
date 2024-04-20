@@ -39,6 +39,7 @@ def create_wine_prefix():
         os.system(f"ln -sf /data/data/com.termux/files/usr/glibc/opt/wine/{container}/wine/bin/wine $PREFIX/glibc/bin/wine64")
         os.system(f"ln -sf /data/data/com.termux/files/usr/glibc/opt/wine/{container}/wine/bin/wine $PREFIX/glibc/opt/wine/{container}/wine/bin/wine64")
     print(" Creating wine prefix 💫")
+    os.system(f"tar -xJf $PREFIX/glibc/opt/darkos/XinputBridge.tar.xz /data/data/com.termux/files/usr/glibc/opt/wine/{container}/wine/lib/wine/ &>/dev/null")
     os.system(f'WINEDLLOVERRIDES="mscoree=disabled" taskset -c 4-7 box64 wine64 wineboot -u &>/dev/null')
     os.system(f'cp -r $PREFIX/glibc/opt/Startxmenu/* "{wine_prefix}/drive_c/ProgramData/Microsoft/Windows/Start Menu"')
     os.system(f'rm "{wine_prefix}/dosdevices/z:"')
@@ -66,7 +67,7 @@ def start_wine():
         else:
             current_resolution = "800x600"
         res = current_resolution
-    os.system("taskset -c 4-7 box64 wine64 explorer /desktop=shell," + res + " $PREFIX/glibc/opt/apps/DARKOS_configuration.exe &>/dev/null &")
+    os.system("box64 wine64 explorer /desktop=shell," + res + " $PREFIX/glibc/opt/apps/DARKOS_configuration.exe &>/dev/null &")
     os.system("am start -n com.termux.x11/com.termux.x11.MainActivity &>/dev/null")
     os.system("clear")
     os.system("python3 $PREFIX/bin/photo.py")
