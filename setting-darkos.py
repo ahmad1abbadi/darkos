@@ -6,6 +6,13 @@ target_folders = ['bin', 'lib', 'lib64', 'share']
 destination_dir = '/data/data/com.termux/files/usr/glibc/opt/wine/3/wine'
 root_dir = "/data/data/com.termux/files/usr/glibc/opt/temp"
 os.system("am start -n com.termux/.HomeActivity")
+def remove():
+    folder_path = '/data/data/com.termux/files/home'
+    for filename in os.listdir(folder_path):
+        if fnmatch.fnmatch(filename, '*.tar.xz*'):
+            file_path = os.path.join(folder_path, filename)
+            os.remove(file_path)
+            print(f'{filename} has been deleted.')
 def uninstall_wine9():
     if os.path.exists("/data/data/com.termux/files/usr/glibc/opt/wine/1/wine/bin"):
         os.system("rm -r /data/data/com.termux/files/usr/glibc/opt/wine/1/wine")
@@ -14,18 +21,29 @@ def uninstall_wine9():
     if os.path.exists("/sdcard/darkos"):
         os.system("rm -r /sdcard/darkos")
 def install_wine9():
-  os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/wine-default.tar.xz")
-  os.system("tar -xJf wine-default.tar.xz -C $PREFIX/glibc/opt/wine/1")
-  os.remove("wine-default.tar.xz")
-  os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/update.tar.xz")
-  os.system("tar -xJf wine-default.tar.xz")
-  os.remove("update.tar.xz")
-  os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/darkos.tar.xz")
-  os.system("tar -xJf darkos.tar.xz -C /sdcard/")
-  os.remove("darkos.tar.xz")
-  os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/AZ.tar.xz")
-  os.system("tar -xJf AZ.tar.xz -C /sdcard/")
-  os.remove("AZ.tar.xz")
+    os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/AZ.tar.xz")
+    os.system("tar -xJf AZ.tar.xz -C $PREFIX/glibc")
+    os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/darkos.tar.xz")
+    os.system("tar -xJf darkos.tar.xz -C /sdcard/")
+    os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/update.tar.xz")
+    os.system("tar -xJf update.tar.xz")
+    os.system("rm $PREFIX/bin/darkos.py")
+    os.system("rm $PREFIX/bin/update-darkos.py")
+    os.system("rm $PREFIX/bin/run-darkos.py")
+    os.system("rm $PREFIX/bin/debug-darkos.py")
+    os.system("rm $PREFIX/bin/setting-darkos.py")
+    os.system("rm $PREFIX/bin/darkos")
+    os.system("wget -O run-darkos.py https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/run-darkos.py")
+    os.system("wget -O darkos.py https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/darkos.py")
+    os.system("wget -O darkos https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/darkos")
+    os.system("wget -O debug-darkos.py https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/debug-darkos.py")
+    os.system("wget -O setting-darkos.py https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/setting-darkos.py")
+    os.system("wget -O update-darkos.py https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/update-darkos.py")
+    os.system("chmod +x darkos")
+    os.system("mv update-darkos.py darkos.py run-darkos.py debug-darkos.py setting-darkos.py darkos $PREFIX/bin/")
+    remove()
+    print("")
+    print(" DARKOS files repaired successfully")
 def internet_connected():
     try:
         socket.create_connection(("8.8.8.8", 53), timeout=1)
