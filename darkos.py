@@ -5,7 +5,7 @@ import time
 import threading
 import shutil
 import sys, urllib.request, urllib.error
-current_version = "0.891"
+current_version = "0.900"
 url = 'https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/currently%20version.txt'
 def start_darkos():
     os.system("clear")
@@ -68,10 +68,6 @@ def wine_container():
             exec(open(conf_path).read())
         if not os.path.exists(wine_prefix):
             print("Creating wine prefix 💫")
-            #if os.path.exists(f"/data/data/com.termux/files/usr/glibc/opt/wine/{prefix_path}/wine/lib/wine/i386-windows/shell32-bak.dll"):
-                #os.system(f"mv /data/data/com.termux/files/usr/glibc/opt/wine/{prefix_path}/wine/lib/wine/i386-windows/shell32-bak.dll /data/data/com.termux/files/usr/glibc/opt/wine/{prefix_path}/wine/lib/wine/i386-windows/shell32.dll")
-                #os.system(f"mv /data/data/com.termux/files/usr/glibc/opt/wine/{prefix_path}/wine/lib/wine/x86_64-windows/shell32-bak.dll /data/data/com.termux/files/usr/glibc/opt/wine/{prefix_path}/wine/lib/wine/x86_64-windows/shell32.dll")
-                #os.system(f"mv /data/data/com.termux/files/usr/glibc/opt/wine/{prefix_path}/wine/lib64/wine/x86_64-windows/shell32-bak.dll /data/data/com.termux/files/usr/glibc/opt/wine/{prefix_path}/wine/lib64/wine/x86_64-windows/shell32.dll")
             os.system(f'WINEDLLOVERRIDES="mscoree=disabled" box64 wine64 wineboot &>/dev/null')
             os.system(f'cp -r $PREFIX/glibc/opt/Startxmenu/* "{wine_prefix}/drive_c/ProgramData/Microsoft/Windows/Start Menu"')
             os.system(f'rm "{wine_prefix}/dosdevices/z:"')
