@@ -10,8 +10,10 @@ to run [Wine](https://www.winehq.org/) on android.
 [Termux](https://f-droid.org/repo/com.termux_118.apk),
 [Termux-X11](https://github.com/ahmad1abbadi/extra/releases/download/apps/termux-x11.apk) and
 [Input Bridge v0.1.9.9](https://github.com/ahmad1abbadi/extra/releases/download/apps/InputBridge_v0.1.9.9.apk) or [Input Bridge v0.0.7](https://github.com/ahmad1abbadi/extra/releases/download/apps/input+bridge+0.0.7.apk)
+[X input Bridge](https://github.com/ahmad1abbadi/extra/releases/download/apps/XinputBridge.apk)
+for using game controller (Bluetooth/ usb) inside wine.
 
-2. Open Termux and paste the following command:
+1. Open Termux and paste the following command:
 ```bash
 curl -o install https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/installOS.sh && chmod +x install && ./install
 ```
