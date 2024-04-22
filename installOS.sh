@@ -2,6 +2,7 @@
 clear
 echo -e "Updating termux packages list please wait\n"
 apt update &>/dev/null
+yes | apt-get full-upgrade >/dev/null
 unlink "$PREFIX/etc/termux/chosen_mirrors"
 ln -s "$PREFIX/etc/termux/mirrors/all" "$PREFIX/etc/termux/chosen_mirrors"
 echo -e "Selecting best termux packages mirror please wait\n"
