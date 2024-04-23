@@ -3,7 +3,7 @@ clear
 echo -e "Updating termux packages list please wait\n"
 apt update &>/dev/null
 yes | apt-get full-upgrade >/dev/null
-unlink "$PREFIX/etc/termux/chosen_mirrors" >/dev/null
+unlink "$PREFIX/etc/termux/chosen_mirrors" &>/dev/null
 ln -s "$PREFIX/etc/termux/mirrors/all" "$PREFIX/etc/termux/chosen_mirrors" >/dev/null
 echo -e "Selecting best termux packages mirror please wait\n"
 TERMUX_APP_PACKAGE_MANAGER=apt pkg --check-mirror update
