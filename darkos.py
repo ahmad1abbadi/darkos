@@ -319,6 +319,30 @@ def recreate_prefix_wineAZ():
          shutil.rmtree('/data/data/com.termux/files/usr/glibc/opt/wine/5/.wine')
          print(f'done')
     main_menu()
+def xinput_support():
+    print("Select the version of Wine you want to recreate the prefix for:")
+    print("")
+    for i in range(1, 6):
+        wine_path = f"/data/data/com.termux/files/usr/glibc/opt/wine/{i}/.wine"
+        if os.path.exists(wine_path):
+            print(f" {i}) Add xinput support on container {i}")
+    print("")
+    print(" Else) Back to the settings menu")
+    print("")
+    user_input = input("Enter your choice: ")
+    if user_input not in ["1", "2", "3", "4", "5"]:
+        # Handle invalid input
+        change_setting()
+    else:
+        wine_container = int(user_input)
+        wine_lib64_path = f"/data/data/com.termux/files/usr/glibc/opt/wine/{wine_container}/wine/lib64"
+        wine_lib_path = f"/data/data/com.termux/files/usr/glibc/opt/wine/{wine_container}/wine/lib/wine"
+        if os.path.exists(wine_lib64_path):
+            os.system(f"tar -xJf $PREFIX/glibc/opt/darkos/XinputBridge_ge.tar.xz -C {wine_lib64_path} &>/dev/null")
+        os.system(f"tar -xJf $PREFIX/glibc/opt/darkos/XinputBridge.tar.xz -C {wine_lib_path} &>/dev/null")
+        print(f"xinput support added to Wine in container {wine_container}")
+        time.sleep(2)
+        change_setting()
 def check_config_wine():
     config_folder = "/sdcard/darkos"
     exec(open('/sdcard/darkos/darkos_dynarec.conf').read())
@@ -461,12 +485,9 @@ def change_setting():
     elif choice == "10":
         winetricks()
     elif choice == "11":
-        conf_path = f"/data/data/com.termux/files/usr/glibc/opt/wine/os.conf"
-        exec(open(conf_path).read())
-        os.system(f"tar -xJf $PREFIX/glibc/opt/darkos/XinputBridge.tar.xz -C /data/data/com.termux/files/usr/glibc/opt/wine/{container}/wine/lib/wine/ &>/dev/null")
-        print("xinput support add to wine in container {container} ")
-        time.sleep(2)
-        change_setting()
+        os.system("clear")
+        photo()
+        xinput_support()
     elif choice == "8":
         os.system("clear")
         photo()
