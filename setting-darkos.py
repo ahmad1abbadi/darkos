@@ -1,6 +1,7 @@
 import os, time, shutil, sys, subprocess, urllib.request, urllib.error
 import tarfile
 import socket
+import fnmatch
 tar_xz_file_path ='/sdcard/darkos/airidosas252builds/wine.tar.xz'
 target_folders = ['bin', 'lib', 'lib64', 'share']
 destination_dir = '/data/data/com.termux/files/usr/glibc/opt/wine/3/wine'
