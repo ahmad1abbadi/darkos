@@ -12,6 +12,6 @@ apt-get -y --with-new-pkgs -o Dpkg::Options::="--force-confdef" upgrade >/dev/nu
 echo -e "please allow storage permission\n"
 termux-setup-storage
 apt install python --no-install-recommends -y &>/dev/null
-echo "be patient"
+echo "please be patient"
 curl -o installglibc.py https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/installglibc.py && python3 installglibc.py
 exit
