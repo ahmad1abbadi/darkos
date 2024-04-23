@@ -5,7 +5,7 @@ import time
 import threading
 import shutil
 import sys, urllib.request, urllib.error
-current_version = "0.900"
+current_version = "0.901"
 url = 'https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/currently%20version.txt'
 def start_darkos():
     os.system("clear")
@@ -402,10 +402,11 @@ def change_setting():
     print("8) Boost cpu 🔥 (needed root in some devices)")
     print("9) Install Styles For Dark Os 🎭")
     print("10) winetricks ⛑️")
+    print("11) add xinput support to wine 👾 (experimental) ")
     print("else) Back 🔙")
     print("")
     choice = input()
-    if choice != "1" and choice != "2" and choice != "3" and choice != "4" and choice != "5" and choice != "6" and choice != "7" and choice != "8" and choice != "9" and choice != "10" and choice != "dev":
+    if choice != "1" and choice != "2" and choice != "3" and choice != "4" and choice != "5" and choice != "6" and choice != "7" and choice != "8" and choice != "9" and choice != "10" and choice != "dev" and choice != "11":
         print("...........")
         main_menu()
     elif choice == "3":
@@ -459,6 +460,13 @@ def change_setting():
         recreate_32bit()
     elif choice == "10":
         winetricks()
+    elif choice == "11":
+        conf_path = f"/data/data/com.termux/files/usr/glibc/opt/wine/os.conf"
+        exec(open(conf_path).read())
+        os.system(f"tar -xJf $PREFIX/glibc/opt/darkos/XinputBridge.tar.xz -C /data/data/com.termux/files/usr/glibc/opt/wine/{container}/wine/lib/wine/ &>/dev/null")
+        print("xinput support add to wine in container {container} ")
+        time.sleep(2)
+        change_setting()
     elif choice == "8":
         os.system("clear")
         photo()
