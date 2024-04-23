@@ -39,7 +39,6 @@ def create_wine_prefix():
         os.system(f"ln -sf /data/data/com.termux/files/usr/glibc/opt/wine/{container}/wine/bin/wine $PREFIX/glibc/bin/wine64")
         os.system(f"ln -sf /data/data/com.termux/files/usr/glibc/opt/wine/{container}/wine/bin/wine $PREFIX/glibc/opt/wine/{container}/wine/bin/wine64")
     print(" Creating wine prefix 💫")
-    os.system(f"tar -xJf $PREFIX/glibc/opt/darkos/XinputBridge.tar.xz -C /data/data/com.termux/files/usr/glibc/opt/wine/{container}/wine/lib/wine/ &>/dev/null")
     os.system(f'WINEDLLOVERRIDES="mscoree=disabled" taskset -c 4-7 box64 wine64 wineboot -u &>/dev/null')
     os.system(f'cp -r $PREFIX/glibc/opt/Startxmenu/* "{wine_prefix}/drive_c/ProgramData/Microsoft/Windows/Start Menu"')
     os.system(f'rm "{wine_prefix}/dosdevices/z:"')
