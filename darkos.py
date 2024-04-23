@@ -320,7 +320,7 @@ def recreate_prefix_wineAZ():
          print(f'done')
     main_menu()
 def xinput_support():
-    print("Select the version of Wine you want to recreate the prefix for:")
+    print("Select the version of Wine you want to add xinput support for:")
     print("")
     for i in range(1, 6):
         wine_path = f"/data/data/com.termux/files/usr/glibc/opt/wine/{i}/.wine"
