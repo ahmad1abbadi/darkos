@@ -338,8 +338,9 @@ def xinput_support():
         wine_lib64_path = f"/data/data/com.termux/files/usr/glibc/opt/wine/{wine_container}/wine/lib64"
         wine_lib_path = f"/data/data/com.termux/files/usr/glibc/opt/wine/{wine_container}/wine/lib/wine"
         if os.path.exists(wine_lib64_path):
-            os.system(f"tar -xJf $PREFIX/glibc/opt/darkos/XinputBridge_ge.tar.xz -C {wine_lib64_path} &>/dev/null")
-        os.system(f"tar -xJf $PREFIX/glibc/opt/darkos/XinputBridge.tar.xz -C {wine_lib_path} &>/dev/null")
+            os.system(f"tar -xJf $PREFIX/glibc/opt/darkos/XinputBridge_ge.tar.xz -C /data/data/com.termux/files/usr/glibc/opt/wine/{wine_container}/wine/ &>/dev/null")
+        else:
+            os.system(f"tar -xJf $PREFIX/glibc/opt/darkos/XinputBridge.tar.xz -C {wine_lib_path} &>/dev/null")
         print(f"xinput support added to Wine in container {wine_container}")
         time.sleep(2)
         change_setting()
