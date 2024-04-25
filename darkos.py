@@ -508,49 +508,51 @@ def change_setting():
         time.sleep(5)
         change_setting()
 def box_version():
-  os.system("clear")
-  photo()
-  print("select box version:")
-  print("")
-  print("1) SAFE-BOX")
-  print("2) Compile and UPDATED BOX64")
-  print("3) BOX86 FOR Wine non-wow64 version ")
-  print("else) CANCEL AND BACK")
-  print("")
-  choice = input()
-  if choice != "1" and choice != "2" and choice != "3":
-    change_setting()
-  elif choice == "1":
-    if os.path.exists("/data/data/com.termux/files/usr/glibc/bin/box64"):
-        os.remove("$PREFIX/glibc/bin/box64")
-    if os.path.exists("/data/data/com.termux/files/usr/glibc/bin/box86"):  
-        os.remove("$PREFIX/glibc/bin/box86")
-    os.system("tar -xJf $PREFIX/glibc/opt/box/safe-box.tar.xz -C $PREFIX/glibc/bin/")
-    os.system("chmod +x $PREFIX/glibc/bin/box86")
-    os.system("chmod +x $PREFIX/glibc/bin/box64") 
-    change_setting()
-  elif choice == "2":
-    if os.path.exists("/data/data/com.termux/files/usr/glibc/bin/box64"):
-        os.remove("$PREFIX/glibc/bin/box64")
-    print("compiling....")
-    os.system("apt install cmake-glibc make-glibc python-glibc -y &>/dev/null")
-    Compile()
-    os.system("mv //data/data/com.termux/files/home/box64/build/box64 $PREFIX/glibc/bin/")
-    os.system("chmod +x $PREFIX/glibc/bin/box64")
-    shutil.rmtree('/data/data/com.termux/files/home/box64')
-    print("done")
-    time.sleep(2)
-    change_setting()
-  elif choice == "3":
-    os.system("wget https://github.com/ahmad1abbadi/darkos/releases/download/beta/box.tar.xz")
-    if os.path.exists("/data/data/com.termux/files/usr/glibc/bin/box64"):
-        os.remove("$PREFIX/glibc/bin/box64")
-    if os.path.exists("/data/data/com.termux/files/usr/glibc/bin/box86"):  
-        os.remove("$PREFIX/glibc/bin/box86")
-    os.system("tar -xJf box.tar.xz -C $PREFIX/glibc/bin/")
-    os.system("chmod +x $PREFIX/glibc/bin/box86")
-    os.system("chmod +x $PREFIX/glibc/bin/box64")
-    change_setting()
+    os.system("clear")
+    photo()
+    print("select box version:")
+    print("")
+    print("1) SAFE-BOX")
+    print("2) Compile and UPDATED BOX64")
+    print("3) BOX86 FOR Wine non-wow64 version ")
+    print("else) CANCEL AND BACK")
+    print("")
+    choice = input()
+    file_path64 = "/data/data/com.termux/files/usr/glibc/bin/box64"
+    file_path86 = "/data/data/com.termux/files/usr/glibc/bin/box86"
+    if choice not in ["1", "2", "3"]:
+        change_setting()
+    elif choice == "1":
+        if os.path.exists(file_path64):
+            os.remove(file_path64)
+        if os.path.exists(file_path86):
+            os.remove(file_path86)
+        os.system("tar -xJf $PREFIX/glibc/opt/box/safe-box.tar.xz -C $PREFIX/glibc/bin/")
+        os.system("chmod +x $PREFIX/glibc/bin/box86")
+        os.system("chmod +x $PREFIX/glibc/bin/box64") 
+        change_setting()
+    elif choice == "2":
+        if os.path.exists(file_path64):
+            os.remove(file_path64)
+        print("compiling....")
+        os.system("apt install cmake-glibc make-glibc python-glibc -y &>/dev/null")
+        Compile()
+        os.system("mv //data/data/com.termux/files/home/box64/build/box64 $PREFIX/glibc/bin/")
+        os.system("chmod +x $PREFIX/glibc/bin/box64")
+        shutil.rmtree('/data/data/com.termux/files/home/box64')
+        print("done")
+        time.sleep(2)
+        change_setting()
+    elif choice == "3":
+        os.system("wget https://github.com/ahmad1abbadi/darkos/releases/download/beta/box.tar.xz")
+        if os.path.exists(file_path64):
+            os.remove(file_path64)
+        if os.path.exists(file_path86):
+            os.remove(file_path86)
+        os.system("tar -xJf box.tar.xz -C $PREFIX/glibc/bin/")
+        os.system("chmod +x $PREFIX/glibc/bin/box86")
+        os.system("chmod +x $PREFIX/glibc/bin/box64")
+        change_setting()
 def reload():
     file_path = os.path.expanduser("~/.termux/termux.properties")
     with open(file_path, "r") as file:
