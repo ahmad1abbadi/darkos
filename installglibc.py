@@ -31,6 +31,10 @@ def install_AZ():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/AZ.tar.xz")
     os.system("tar -xJf AZ.tar.xz -C $PREFIX/glibc/")
     os.remove("AZ.tar.xz")
+def install_box():
+    os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/box.tar.xz")
+    os.system("tar -xJf box.tar.xz -C $PREFIX/glibc/")
+    os.remove("box.tar.xz")
 def install_conf():
     folder_path = "/sdcard/darkos"
     if os.path.exists(folder_path):
@@ -137,10 +141,12 @@ install_mono()
 print(" 👣 👣 👣 👣 👣 👣")
 install_wine9()
 print(" 👣 👣 👣 👣 👣 👣 👣")
-update()
+install_box()
 print(" 👣 👣 👣 👣 👣 👣 👣 👣")
+update()
+print(" 👣 👣 👣 👣 👣 👣 👣 👣 👣 ")
 scripts()
-print(" 👣 👣 👣 👣 👣 👣 👣 👣 👣")
+print(" 👣 👣 👣 👣 👣 👣 👣 👣 👣 👣")
 remove()
 print("          Installation finished successfully ")
 print("")
