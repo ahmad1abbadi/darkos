@@ -33,7 +33,7 @@ def install_AZ():
     os.remove("AZ.tar.xz")
 def install_box():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/box.tar.xz")
-    os.system("tar -xJf box.tar.xz -C $PREFIX/glibc/")
+    os.system("tar -xJf box.tar.xz -C $PREFIX/glibc/bin")
     os.remove("box.tar.xz")
 def install_conf():
     folder_path = "/sdcard/darkos"
@@ -83,6 +83,7 @@ def create_prefix():
     os.system(f'cp -r $PREFIX/glibc/opt/Startxmenu/* "{wine_prefix}/drive_c/ProgramData/Microsoft/Windows/Start Menu"')
     os.system(f'rm "{wine_prefix}/dosdevices/z:"')
     os.system(f'ln -s /sdcard/Download "{wine_prefix}/dosdevices/o:" &>/dev/null')
+    os.system(f'ln -s /data/data/com.termux/files/usr/glibc/opt/G_drive "{wine_prefix}/dosdevices/g:" &>/dev/null')
     os.system(f'ln -s /sdcard/darkos "{wine_prefix}/dosdevices/e:" &>/dev/null')
     os.system(f'ln -s /data/data/com.termux/files "{wine_prefix}/dosdevices/z:"')
     print("Installing OS stuff...")
