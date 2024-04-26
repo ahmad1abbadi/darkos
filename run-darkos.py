@@ -5,8 +5,10 @@ import time
 import threading
 import shutil
 import sys, urllib.request, urllib.error
+
 def extract_and_delete_tar_files():
     search_paths = [
+        "/data/data/com.termux/files/usr/glibc/opt/temp/box",
         "/data/data/com.termux/files/usr/glibc/opt/wine/5",
         "/data/data/com.termux/files/usr/glibc/opt/wine/4",
         "/data/data/com.termux/files/usr/glibc/opt/wine/2",
@@ -22,6 +24,12 @@ def extract_and_delete_tar_files():
                     shutil.rmtree(os.path.join(path, "wine"))
                 subprocess.run(["tar", "-xf", tar_file, "-C", path])
                 os.remove(tar_file)
+                if os.path.exists(os.path.join(path, "box64")):
+                    destination_path = "/data/data/com.termux/files/usr/glibc/bin/box64"
+                    if os.path.exists(destination_path):
+                        os.remove(destination_path)
+                    shutil.move(os.path.join(path, "box64"), destination_path)
+                    time.sleep(1)
 def load_conf():
     conf_paths = [
         "/data/data/com.termux/files/usr/glibc/opt/wine/os.conf",
@@ -57,15 +65,9 @@ def create_wine_prefix():
     subprocess.run(["bash", "darkos"])
     exit()
 def start_wine():
-    global res
-    if res == "auto":
-        xrandr_output = os.popen('xrandr').read()
-        current_resolution_match = re.search(r'current\s+(\d+) x (\d+)', xrandr_output)
-        if current_resolution_match:
-            current_resolution = f"{current_resolution_match.group(1)}x{current_resolution_match.group(2)}"
-        else:
-            current_resolution = "800x600"
-        res = current_resolution
+    os.system("chmod +x $PREFIX/glibc/opt/scripts/termux-x11.sh")
+    os.system("$PREFIX/glibc/opt/scripts/termux-x11.sh displayResolutionMode:custom")
+    os.system(f"$PREFIX/glibc/opt/scripts/termux-x11.sh displayResolutionCustom:{res}")
     os.system("box64 wine64 explorer /desktop=shell," + res + " $PREFIX/glibc/opt/apps/DARKOS_configuration.exe &>/dev/null &")
     os.system("am start -n com.termux.x11/com.termux.x11.MainActivity &>/dev/null")
     os.system("clear")
