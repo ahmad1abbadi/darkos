@@ -176,4 +176,4 @@ Special thanks to ptitSeb, Maxython, glibc-runner, hardray, Tωaik, zhongerxll a
 
 [Mesa](https://docs.mesa3d.org/license.html)
 
-[Mesa-VirGL](https://github.com/alexvorxx/Mesa-VirGL)
+[Mangohud](https://github.com/flightlessmango/MangoHud)
