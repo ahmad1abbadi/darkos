@@ -132,11 +132,12 @@ For touch controls Input Bridge app is required.
 #
 
 ## Developers 
-*[AZ](https://github.com/ahmad1abbadi) . 
-*[Hisham](https://github.com/hisham263) .
-*[Md arif](https://github.com/sabamdarif) . 
-*[zhongerxll](https://github.com/zhongerxll) . 
-*[Ilan12346-maya](https://github.com/Ilan12346-maya) . 
+* [AZ](https://github.com/ahmad1abbadi) . 
+* [Hisham](https://github.com/hisham263) .
+* [Md arif](https://github.com/sabamdarif) . 
+* [zhongerxll](https://github.com/zhongerxll) . 
+* [Ilan12346-maya](https://github.com/Ilan12346-maya) .
+  
 #
 
 thanks to our testers:
