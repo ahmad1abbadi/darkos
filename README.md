@@ -131,12 +131,12 @@ For touch controls Input Bridge app is required.
 [buy me a coffee](https://www.buymeacoffee.com/AZabbadi)
 #
 
-## Developers 
-* [AZ](https://github.com/ahmad1abbadi) . 
-* [Hisham](https://github.com/hisham263) .
-* [Md arif](https://github.com/sabamdarif) . 
-* [zhongerxll](https://github.com/zhongerxll) . 
-* [Ilan12346-maya](https://github.com/Ilan12346-maya) .
+## Darkos Developers 
+* [AZ](https://github.com/ahmad1abbadi) 
+* [Hisham](https://github.com/hisham2630)
+* [Md arif](https://github.com/sabamdarif) 
+* [zhongerxll](https://github.com/zhongerxll) 
+* [Ilan12346-maya](https://github.com/Ilan12346-maya)
   
 #
 
