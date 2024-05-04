@@ -130,6 +130,15 @@ For touch controls Input Bridge app is required.
 ## Support Darkos
 [buy me a coffee](https://www.buymeacoffee.com/AZabbadi)
 #
+
+## Developers 
+*[AZ](https://github.com/ahmad1abbadi) . 
+*[Hisham](https://github.com/hisham263) .
+*[Md arif](https://github.com/sabamdarif) . 
+*[zhongerxll](https://github.com/zhongerxll) . 
+*[Ilan12346-maya](https://github.com/Ilan12346-maya) . 
+#
+
 thanks to our testers:
 
 GhostDz36, caoji080
@@ -138,11 +147,6 @@ GhostDz36, caoji080
 Huge thanks to:
 
 [airidosas252](https://github.com/airidosas252) for his turnip and wine builds.
-#
-Many thanks to:
-
-ILAN12346 for his great work to implement Xinput, Dinput support without root access.
-
 #
 Special thanks to ptitSeb, Maxython, glibc-runner, hardray, Tωaik, zhongerxll and others for help.
 
