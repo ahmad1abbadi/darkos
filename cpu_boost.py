@@ -9,6 +9,14 @@ from threading import Lock
 import multiprocessing
 from multiprocessing import Process, Queue
 
+R = "\033[1;31m"
+G = "\033[1;32m"
+Y = "\033[1;33m"
+B = "\033[1;34m"
+C = "\033[1;36m"
+W = "\033[1;37m"
+BOLD = "\033[1m"
+
 # Initialize blessings terminal
 term = Terminal()
 
@@ -43,7 +51,7 @@ def get_file_descriptor_info(pid):
         file_names = [file.path for file in files]
         return file_names
     except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
-        print(f"Error getting file descriptor info for PID {pid}: {e}")
+        print(f"{R} Error getting file descriptor info for PID {pid}: {e} {W}")
         return []
 
 def get_shared_memory_info(pid):
@@ -62,7 +70,7 @@ def get_shared_memory_info(pid):
 
         return shared_memory_info
     except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
-        print(f"Error getting shared memory info for PID {pid}: {e}")
+        print(f"{R} Error getting shared memory info for PID {pid}: {e} {W}")
         return []
 
 def get_idle_cores():
@@ -112,11 +120,11 @@ def adjust_cpu_and_priority(process, num_cores_to_assign, cpu_freqs):
             # Set the priority of the process to a higher value
             process.nice(-10)  # Adjust the nice value as needed
 
-            print(f"Adjusted CPU affinity and priority for PID {process.info['pid']}")
+            print(f"{G} Adjusted CPU affinity and priority for PID {process.info['pid']} {W}")
         else:
-            print(f"No need to adjust CPU affinity for PID {process.info['pid']}")
+            print(f"{C} No need to adjust CPU affinity for PID {process.info['pid']} {W}")
     except (psutil.NoSuchProcess, IndexError, psutil.AccessDenied) as e:
-        print(f"Error adjusting CPU affinity and priority: {e}")
+        print(f"{R} Error adjusting CPU affinity and priority: {e} {W}")
 
 def optimize_memory_for_high_cpu_process(process, recommended_memory_gb=6):
     try:
@@ -132,15 +140,15 @@ def optimize_memory_for_high_cpu_process(process, recommended_memory_gb=6):
         if release_amount_gb > 0:
             # Example: Release dynamically calculated amount of memory
             process.memory_info().rss -= int(release_amount_gb * 1024 * 1024)
-            print(f"Released {release_amount_gb:.2f} GB of memory for PID {process.info['pid']}")
+            print(f"{G} Released {C} {release_amount_gb:.2f} GB {G} of memory for PID {C} {process.info['pid']} {W}")
 
             # Trigger garbage collection to handle remaining cleanup
             gc.collect()
 
         else:
-            print(f"No unnecessary memory to release for PID {process.info['pid']}")
+            print(f"{G} No unnecessary memory to release for PID {C}{process.info['pid']} {W}")
     except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
-        print(f"Error optimizing memory for process: {e}")
+        print(f"{R} Error optimizing memory for process: {C}{e} {W}")
 
 class ProcessInfo:
     def __init__(self, pid, cpu_usage, file_descriptors):
@@ -260,7 +268,7 @@ def cpu_memory():
                     # Get file information for the high CPU process
                     file_info = get_file_descriptor_info(high_usage_process.info['pid'])
                     num_files = len(file_info)
-                    print(f"Number of files in use by PID {high_usage_process.info['pid']}: {num_files}")
+                    print(f"{G} Number of files in use by PID {C} {high_usage_process.info['pid']}: {num_files} {W}")
 
                 low_usage_processes = [process for process in processes
                                        if process.info['cpu_percent'] < 5 and process.info['create_time'] < time.time() - 10]
@@ -273,24 +281,24 @@ def cpu_memory():
                                           reverse=False)
                     process.cpu_affinity(sorted_cores)
 
-                    print(f"Assigned low-scoring cores for PID {process.info['pid']}")
+                    print(f"{G}Assigned low-scoring cores for PID {C}{process.info['pid']} {W}")
 
                 with term.fullscreen():
                     print(term.clear)
-                    print("CPU Info:")
+                    print(f"{R}[{W}-{R}]{G}{BOLD} CPU Info: {W}")
                     for key, value in cpu_info.items():
-                        print(f"{key}: {value}")
+                        print(f"{G}{key}: {C}{value} {W}")
 
-                    print("\nCPU Usage:")
+                    print(f"{R}[{W}-{R}]{G}{BOLD} \nCPU Usage: {W}")
                     for process_pid, process_usage, process_core_count in cpu_usage_futures:
-                        print(f"PID {process_pid}: {process_usage}% (Using {process_core_count} cores)")
+                        print(f"{G}PID {process_pid}: {C}{process_usage}% {G}(Using {C}{process_core_count} {G}cores) {W}")
                         num_files = len(get_file_descriptor_info(process_pid))
-                        print(f"Number of files for PID {process_pid}: {num_files}")
+                        print(f"{R}[{W}-{R}]{G}{BOLD} Number of files for PID {process_pid}: {C}{num_files} {W}")
 
-                    print("\nMemory Info:")
-                    print(f"Memory Usage: {cpu_info['Memory Usage']}%")
-                    print(f"Available Memory: {cpu_info['Available Memory']} bytes")
-                    print(f"Total Memory: {cpu_info['Total Memory']} bytes")
+                    print(f"{R}[{W}-{R}]{G}{BOLD} \nMemory Info: {W}")
+                    print(f"{G} Memory Usage: {C}{cpu_info['Memory Usage']}% {W}")
+                    print(f"{G} Available Memory: {C}{cpu_info['Available Memory']} bytes {W}")
+                    print(f"{G} Total Memory: {C}{cpu_info['Total Memory']} bytes {W}")
 
                 time.sleep(0.5)
     except KeyboardInterrupt:
