@@ -118,6 +118,7 @@ def scripts():
     os.system("wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/cpu_boost.py &>/dev/null")
     os.system("chmod +x darkos")
     os.system("chmod +x winetricks")
+    os.system("chmod +x $PREFIX/glibc/opt/scripts/termux-x11.sh")
     os.system("mv darkos update-darkos.py darkos.py winetricks setting-darkos.py debug-darkos.py run-darkos.py cpu_boost.py photo.py $PREFIX/bin/")
 def remove():
     os.system("rm glibc-darkos.tar.xz install installglibc.py")
