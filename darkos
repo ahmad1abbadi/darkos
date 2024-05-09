@@ -50,12 +50,12 @@ termux-x11 :0 &>/dev/null &
 pulseaudio --start --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" --exit-idle-time=-1 &>/dev/null
 sleep 1
 
-windows10="$PREFIX/glibc/opt/darkos/windows_10.txt"
-custom_theme="$PREFIX/glibc/opt/darkos/custom_theme.txt"
+custom_darkos="$PREFIX/glibc/opt/darkos/custom_theme.txt"
 
-if [ -f "$windows10" ]; then
-    python3 $PREFIX/glibc/opt/scripts/windows_10.py $@
-elif [ -f "$custom_theme" ]; then
+if [ -f "$custom_darkos" ]; then
+    export DISPLAY=:0
+    termux-x11 :0 &
+    startxfce4 &>/dev/null &
     python3 $PREFIX/glibc/opt/scripts/custom_style.py $@
 else
     python3 $PREFIX/bin/run-darkos.py $@
