@@ -7,9 +7,9 @@ unlink "$PREFIX/etc/termux/chosen_mirrors" &>/dev/null
 ln -s "$PREFIX/etc/termux/mirrors/all" "$PREFIX/etc/termux/chosen_mirrors" &>/dev/null
 echo -e "Selecting best termux packages mirror please wait\n"
 TERMUX_APP_PACKAGE_MANAGER=apt pkg --check-mirror update
+clear
 echo -e "Upgrading termux packages...this might take some time\n"
 yes 2>/dev/null | apt-get full-upgrade &>/dev/null
-clear
 echo -e "please allow storage permission\n"
 termux-setup-storage
 echo "be patient"
