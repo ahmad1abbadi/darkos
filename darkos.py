@@ -14,7 +14,7 @@ C = "\033[1;36m"
 W = "\033[1;37m"
 BOLD = "\033[1m"
 
-current_version = "0.911"
+current_version = "0.94"
 url = 'https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/currently%20version.txt'
 
 def colored_input(prompt):
@@ -418,32 +418,17 @@ def auto_start():
 def styles():
     os.system("clear")
     photo()
-    print(f"{R}[{W}-{R}]{G}{BOLD} install styles menu 🏞️ {W}")
+    print(f"{R}[{W}-{R}]{G}{BOLD} are you sure adding style support ? 🏞️ {W}")
     print("")
-    print(f"{Y} 1) Windows 10 {W}")
+    print(f"{Y} 1) YES {W}")
     print("")
-    print(f"{Y} 2) MacOS Style {W}")
+    print(f"{Y} 2) NO {W}")
     print("")
-    print(f"{Y} 3) Manjaro Style {W}")
-    print("")
-    print(f"{Y} 4) Android Special Style {W}")
-    print("")
-    print(f"{Y} else) back to settings menu {W}")
     choice = input()
     if choice == "1":
-        os.system("chmod +x $PREFIX/glibc/opt/scripts/install_win10_xfce4.sh")
-        os.system("bash $PREFIX/glibc/opt/scripts/install_win10_xfce4.sh")
+        os.system("chmod +x $PREFIX/glibc/opt/scripts/install_xfce4.sh")
+        os.system("bash $PREFIX/glibc/opt/scripts/install_xfce4.sh")
     elif choice == "2":
-        os.system("chmod +x $PREFIX/glibc/opt/scripts/install_macos_xfce4.sh")
-        os.system("bash $PREFIX/glibc/opt/scripts/install_macos_xfce4.sh")
-    elif choice == "3":
-        os.system("chmod +x $PREFIX/glibc/opt/scripts/install_manjaro_xfce.sh")
-        os.system("bash $PREFIX/glibc/opt/scripts/install_manjaro_xfce.sh")
-    elif choice == "4":
-        os.system("chmod +x $PREFIX/glibc/opt/scripts/install_android_xfce.sh")
-        os.system("bash $PREFIX/glibc/opt/scripts/install_android_xfce.sh")
-        exit()
-    else:
         change_setting()
 def change_setting():
     os.system("clear")
@@ -457,9 +442,9 @@ def change_setting():
     print(f"{Y} 6) Debug mode 🔧 {W}")
     print(f"{Y} 7) Fix prefix for non wow64 wine ♻️ {W}")
     print(f"{Y} 8) Boost cpu 🔥 (needed root in some devices) {W}")
-    print(f"{Y} 9) Install Styles For Dark Os 🎭 {W}")
+    print(f"{Y} 9) Add Styles Support For Dark Os 🎭 {W}")
     print(f"{Y} 10) winetricks ⛑️ {W}")
-    print(f"{Y} 11) add xinput support to wine 👾 (experimental) {W}")
+    print(f"{Y} 11) Add virgl support {W}")
     print(f"{Y} else) Back 🔙 {W}")
     print("")
     choice = input()
@@ -468,6 +453,20 @@ def change_setting():
         main_menu()
     elif choice == "3":
         box_version()
+    elif choice == "11":
+        os.system("clear")
+        photo()
+        print(f"{R}[{W}-{R}]{G}{BOLD} installing vrigl server please wait {W}")
+        os.system("apt install tur-repo")
+        print("")
+        time.sleep(2)
+        os.system("apt install virglrenderer-android virglrenderer-mesa-zink -y")
+        print(f"{R}[{W}-{R}]{G}{BOLD} vrigl server install successfuly {W}")  
+        print("")
+        print(f"{R}[{W}-{R}]{G}{BOLD} congratulations virgl now supported {W}") 
+        print("")      
+        time.sleep(2)
+        change_setting()
     elif choice == "dev":
         os.system("clear")
         print(f"{G}{BOLD} share log file on our Telegram group {W}")
@@ -517,10 +516,6 @@ def change_setting():
         recreate_32bit()
     elif choice == "10":
         winetricks()
-    elif choice == "11":
-        os.system("clear")
-        photo()
-        xinput_support()
     elif choice == "8":
         os.system("clear")
         photo()
