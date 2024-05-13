@@ -6,6 +6,14 @@ import threading
 import shutil
 import sys, urllib.request, urllib.error
 
+R = "\033[1;31m"
+G = "\033[1;32m"
+Y = "\033[1;33m"
+B = "\033[1;34m"
+C = "\033[1;36m"
+W = "\033[1;37m"
+BOLD = "\033[1m"
+
 def extract_and_delete_tar_files():
     search_paths = [
         "/data/data/com.termux/files/usr/glibc/opt/temp/box",
@@ -46,7 +54,7 @@ def create_wine_prefix():
     if not os.path.exists(f"/data/data/com.termux/files/usr/glibc/opt/wine/{container}/wine/bin/wine64"):
         os.system(f"ln -sf /data/data/com.termux/files/usr/glibc/opt/wine/{container}/wine/bin/wine $PREFIX/glibc/bin/wine64")
         os.system(f"ln -sf /data/data/com.termux/files/usr/glibc/opt/wine/{container}/wine/bin/wine $PREFIX/glibc/opt/wine/{container}/wine/bin/wine64")
-    print(" Creating wine prefix 💫")
+    print(f"{R}[{W}-{R}]{G}{BOLD} Creating wine prefix 💫 {W}")
     os.system(f'WINEDLLOVERRIDES="mscoree=disabled" taskset -c 4-7 box64 wine64 wineboot -u &>/dev/null')
     os.system(f'cp -r $PREFIX/glibc/opt/Startxmenu/* "{wine_prefix}/drive_c/ProgramData/Microsoft/Windows/Start Menu"')
     os.system(f'rm "{wine_prefix}/dosdevices/z:"')
@@ -54,13 +62,13 @@ def create_wine_prefix():
     os.system(f'ln -s /data/data/com.termux/files/usr/glibc/opt/G_drive "{wine_prefix}/dosdevices/g:" &>/dev/null')
     os.system(f'ln -s /sdcard/darkos "{wine_prefix}/dosdevices/e:" &>/dev/null')
     os.system(f'ln -s /data/data/com.termux/files "{wine_prefix}/dosdevices/z:"')
-    print(" Installing OS stuff...")
+    print(f"{R}[{W}-{R}]{G}{BOLD} Installing OS stuff... {W}")
     os.system(f'box64 wine64 "$PREFIX/glibc/opt/apps/Install OS stuff.bat" &>/dev/null')
-    print(" Done!")
-    print(" prefix done enjoy 🤪 ")
+    print(f"{R}[{W}-{R}]{G}{BOLD} Done! {W}")
+    print(f"{G}{BOLD} prefix done enjoy 🤪 {W}")
     time.sleep(1)
     os.system("box64 wineserver -k &>/dev/null")
-    print(" rebooting")
+    print(f"{G}{BOLD} rebooting..... {W}")
     time.sleep(1)
     subprocess.run(["bash", "darkos"])
     exit()
@@ -73,16 +81,16 @@ def start_wine():
     os.system("clear")
     os.system("python3 $PREFIX/bin/photo.py")
     print("")
-    print("DARK OS is running......")
+    print(f"{G}{BOLD} DARK OS is running...... {W}")
     print("")
-    print("to SHUTDOWN.. it Press 1 or anything else to REBOOT..")
+    print(f"{G}{BOLD} Press {C} 1 to SHUTDOWN {G}it... or {C}anything else to REBOOT{G}.. {W}")
 def restart_wine():
     while True:
         file_path = "/data/data/com.termux/files/usr/glibc/opt/darkos/file.reboot"
         while os.path.exists(file_path):
             time.sleep(1) 
         os.system("box64 wineserver -k &>/dev/null")
-        print("Restarting WINE")
+        print(f"{G}{BOLD} Restarting WINE {W}")
         os.system(f"touch {file_path}")
         restart_program() 
 def update_wine():
@@ -91,7 +99,7 @@ def update_wine():
         while os.path.exists(file_path):
             time.sleep(1)
         os.system("box64 wineserver -k &>/dev/null")
-        print("Restarting WINE")
+        print(f"{G}{BOLD} Restarting WINE {W}")
         os.system(f"touch {file_path}")
         os.system("python3 $PREFIX/bin/update-darkos.py")
         exit()
@@ -108,7 +116,7 @@ def debug_wine():
         while os.path.exists(file_path):
             time.sleep(1) 
         os.system("box64 wineserver -k &>/dev/null")
-        print("Restarting WINE")
+        print(f"{G}{BOLD} Restarting WINE {W}")
         os.system(f"touch {file_path}")
         os.system("python3 $PREFIX/bin/debug-darkos.py")
         exit()
@@ -118,7 +126,7 @@ def settings_wine():
         while os.path.exists(file_path):
             time.sleep(1) 
         os.system("box64 wineserver -k &>/dev/null")
-        print("Restarting WINE")
+        print(f"{G}{BOLD} Restarting WINE {W}")
         os.system(f"touch {file_path}")
         os.system("chmod +x /data/data/com.termux/files/usr/bin/install.sh")
         os.system("am start -n com.termux/.app.TermuxActivity &>/dev/null")
@@ -130,7 +138,7 @@ def input_action():
         stop = input()
         if stop != "1":
             print("")
-            print("Rebooting.........")
+            print(f"{G}{BOLD} Rebooting......... {W}")
             os.system("box64 wineserver -k &>/dev/null")
             time.sleep(1)
             restart_program() 
@@ -148,8 +156,8 @@ def stop_darkos():
     os.system("box64 wineserver -k")
     os.system('pkill -f "app_process / com.termux.x11"')
     os.system('pkill -f pulseaudio')
-    print("shutdown........")
-    os.system("am startservice -a com.termux.service_stop com.termux/.app.TermuxService")
+    print(f"{G}{BOLD} shutdown........ {W}")
+    subprocess.run("am startservice -a com.termux.service_stop com.termux/.app.TermuxService", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     os.system("pkill -f com.termux.x11")
     subprocess.run(['am', 'broadcast', '-a', 'com.termux.x11.ACTION_STOP', '-p', 'com.termux.x11'])
     os._exit(0)

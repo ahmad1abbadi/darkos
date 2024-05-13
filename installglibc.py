@@ -1,20 +1,55 @@
 import os, shutil, time
+import subprocess
+
+R = "\033[1;31m"
+G = "\033[1;32m"
+Y = "\033[1;33m"
+B = "\033[1;34m"
+C = "\033[1;36m"
+W = "\033[1;37m"
+BOLD = "\033[1m"
+
+def package_install_and_check(*packs_list):
+    for package_name in packs_list:
+        print(f"{R}[{W}-{R}]{G}{BOLD} Installing package: {C}{package_name} {W}")
+        result = subprocess.run(["pkg", "install", package_name, "-y"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if result.returncode != 0:
+            subprocess.run(["apt", "--fix-broken", "install", "-y --no-install-recommends"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            subprocess.run(["dpkg", "--configure", "-a"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        
+        if subprocess.run(["dpkg", "-s", package_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE).returncode == 0:
+            print(f"{R}[{W}-{R}]{G}{BOLD} {package_name} installed successfully {W}")
+        else:
+            if subprocess.run(["type", "-p", package_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE).returncode == 0 or \
+                os.path.exists(f"{os.environ['PREFIX']}/bin/{package_name}*") or \
+                os.path.exists(f"{os.environ['PREFIX']}/bin/*{package_name}"):
+                print(f"{R}[{W}-{R}]{G} {package_name} installed successfully {W}")
+
+def check_and_backup(file_path):
+
+    home_dir = os.path.expanduser("~")
+    full_path = os.path.join(home_dir, file_path)
+
+    if os.path.exists(full_path):
+        backup_path = f"{full_path}.bak"
+        os.rename(full_path, backup_path)
+
 def start_darkos():
     os.system("clear")
     if "LD_PRELOAD" in os.environ:
         del os.environ["LD_PRELOAD"]
-    print("Starting")
+    print(f"{R}[{W}-{R}]{G}{BOLD} Starting {W}")
     os.system("termux-x11 :0 &>/dev/null &")
     os.system('pulseaudio --start --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" --exit-idle-time=-1 &>/dev/null')
     
 def termux_pkg():
-    print("This takes a few minutes it depends on your internet connection")
+    print(f"{R}[{W}-{R}]{G}{BOLD} This takes a few minutes it depends on your internet connection {W}")
     os.system("pkg install glibc-repo x11-repo -y &>/dev/null")
-    print("glibc-repo + x11-repo installed")
-    os.system("pkg install pulseaudio patchelf xkeyboard-config freetype fontconfig termux-x11-nightly termux-am zenity which bash curl sed cabextract -y --no-install-recommends &>/dev/null")
-    print("pulseaudio + termux-am +........... installed successfully ")
-    os.system("pkg install wget make libpng xorg-xrandr cmake unzip p7zip patchelf -y --no-install-recommends &>/dev/null")
-    print("patchelf + wget + make +........ installed successfully")
+    print(f"{R}[{W}-{R}]{G}{BOLD} glibc-repo + x11-repo installed {W}")
+    package_install_and_check("pulseaudio", "patchelf", "xkeyboard-config", "freetype", "fontconfig", "termux-x11-nightly", "termux-am zenity", "which", "bash", "curl", "sed", "cabextract")
+    print(f"{R}[{W}-{R}]{G}{BOLD}pulseaudio + termux-am +........... installed successfully {W}")
+    package_install_and_check("wget", "make", "libpng", "xorg-xrandr", "cmake", "unzip", "p7zip", "patchelf")
+    print(f"{R}[{W}-{R}]{G}{BOLD} patchelf + wget + make +........ installed successfully {W}")
     print("")
 def install_glibc_AZ():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/glibc-darkos.tar.xz")
@@ -52,7 +87,7 @@ def edit_bashrc():
             for line in f:
                 if command in line:
                     command_exists = True
-                    print("Welcome back again ☺️ ")
+                    print(f"{R}[{W}-{R}]{G}{BOLD} Welcome back again ☺️ {W}")
                     break
         if not command_exists:
             with open(bashrc_path, 'a') as f:
@@ -77,7 +112,7 @@ def create_prefix():
     os.system("chmod +x /data/data/com.termux/files/usr/glibc/opt/wine/1/wine/bin/wineserver")
     exec(open(conf_path).read())
     os.environ.pop('LD_PRELOAD', None)
-    print("Creating wine prefix 💫")
+    print(f"{R}[{W}-{R}]{G}{BOLD} Creating wine prefix 💫 {W}")
     os.system(f"tar -xJf $PREFIX/glibc/opt/darkos/XinputBridge.tar.xz -C /data/data/com.termux/files/usr/glibc/opt/wine/1/wine/lib/wine/ &>/dev/null")
     os.system(f'WINEUSERNAME="DARKOS" WINEDLLOVERRIDES="mscoree=disabled" box64 wine64 wineboot &>/dev/null')
     os.system(f'cp -r $PREFIX/glibc/opt/Startxmenu/* "{wine_prefix}/drive_c/ProgramData/Microsoft/Windows/Start Menu"')
@@ -86,15 +121,15 @@ def create_prefix():
     os.system(f'ln -s /data/data/com.termux/files/usr/glibc/opt/G_drive "{wine_prefix}/dosdevices/g:" &>/dev/null')
     os.system(f'ln -s /sdcard/darkos "{wine_prefix}/dosdevices/e:" &>/dev/null')
     os.system(f'ln -s /data/data/com.termux/files "{wine_prefix}/dosdevices/z:"')
-    print("Installing OS stuff...")
+    print(f"{R}[{W}-{R}]{G}{BOLD} Installing OS stuff... {W}")
     os.system(f'box64 wine "$PREFIX/glibc/opt/apps/Install OS stuff.bat" &>/dev/null')
-    print("Done!")
-    print("prefix done enjoy 🤪 ")
+    print(f"{R}[{W}-{R}]{G}{BOLD} Done! {W}")
+    print(f"{R}[{W}-{R}]{G}{BOLD} prefix done enjoy 🤪 {W}")
     time.sleep(3)
     os.system("box64 wineserver -k &>/dev/null")
-    print(f'done')
+    print(f'{R}[{W}-{R}]{G}{BOLD} done {W}')
     print("")
-    print("starting DARK OS ")
+    print(f"{R}[{W}-{R}]{G}{BOLD} Starting DARK OS {W}")
     time.sleep(2)
     os.system("python3 $PREFIX/bin/run-darkos.py")
 def install_mono():
@@ -120,15 +155,23 @@ def scripts():
     os.system("chmod +x winetricks")
     os.system("chmod +x $PREFIX/glibc/opt/scripts/termux-x11.sh")
     os.system("mv darkos update-darkos.py darkos.py winetricks setting-darkos.py debug-darkos.py run-darkos.py cpu_boost.py photo.py $PREFIX/bin/")
+    check_and_backup(".termux/colors.properties")
+    os.system("wget -O $HOME/.termux/colors.properties https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/terminal_utility/colors.properties &>/dev/null")
+    check_and_backup(os.getenv("PREFIX") + "/etc/motd-playstore")
+    check_and_backup(os.getenv("PREFIX") + "/ect/motd")
+    os.system("wget -O $PREFIX/etc/darkos-motd.sh https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/terminal_utility/darkos-motd.sh &>/dev/null")
+    os.system(f'echo "bash {os.getenv("PREFIX")}/etc/darkos-motd.sh" >> {os.getenv("PREFIX")}/etc/termux-login.sh')
+    check_and_backup(".termux/font.ttf")
+    os.system("wget -O $HOME/.termux/font.ttf https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/terminal_utility/ubuntu-mono.ttf &>/dev/null")
 def remove():
     os.system("rm glibc-darkos.tar.xz install installglibc.py")
     os.system("clear")
 os.system("clear")
-print(" DarkOS installation is begining 😉")
+print(f"{R}[{W}-{R}]{G}{BOLD} DarkOS installation is begining 😉 {W}")
 print("")
 edit_bashrc()
 print("")
-print("please wait .......")
+print(f"{R}[{W}-{R}]{G}{BOLD} please wait ....... {W}")
 termux_pkg()
 print(" 👣")
 install_glibc_AZ()
@@ -150,7 +193,7 @@ print(" 👣 👣 👣 👣 👣 👣 👣 👣 👣 ")
 scripts()
 print(" 👣 👣 👣 👣 👣 👣 👣 👣 👣 👣")
 remove()
-print("          Installation finished successfully ")
+print(f"{R}[{W}-{R}]{G}{BOLD}   Installation finished successfully {W}")
 print("")
 start_darkos()
 create_prefix()

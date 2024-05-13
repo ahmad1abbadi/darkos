@@ -1,4 +1,13 @@
 import os, time, shutil, sys, subprocess, urllib.request, urllib.error, fnmatch
+
+R = "\033[1;31m"
+G = "\033[1;32m"
+Y = "\033[1;33m"
+B = "\033[1;34m"
+C = "\033[1;36m"
+W = "\033[1;37m"
+BOLD = "\033[1m"
+
 current_version = "0.911"
 url = 'https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/currently%20version.txt'
 def remove():
@@ -13,15 +22,15 @@ os.system("clear")
 os.system("python3 $PREFIX/bin/photo.py")
 time.sleep(2)   
 print("")
-print("Shutdown OS....")
+print(f"{R}[{W}-{R}]{G}{BOLD} Shutdown OS.... {W}")
 print("")
-print("checking 🔎.....")
+print(f"{R}[{W}-{R}]{G}{BOLD} checking 🔎..... {W}")
 time.sleep(1)
 response = urllib.request.urlopen(url)
 latest_version = response.read().decode('utf-8').strip()
 try:
   if latest_version > current_version:
-    print("update available..... updating......📥")
+    print(f"{R}[{W}-{R}]{G}{BOLD} update available..... {C}updating......📥 {W}")
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/AZ.tar.xz")
     os.system("tar -xJf AZ.tar.xz -C $PREFIX/glibc")
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/darkos.tar.xz")
@@ -45,17 +54,17 @@ try:
     os.system("chmod +x darkos")
     os.system("mv update-darkos.py darkos.py run-darkos.py debug-darkos.py setting-darkos.py darkos $PREFIX/bin/")
     remove()
-    print("update completed 🎉")
-    print("rebooting")
+    print(f"{R}[{W}-{R}]{G}{BOLD} update completed 🎉 {W}")
+    print(f"{G}{BOLD} rebooting.... {W}")
     time.sleep(3)
 except urllib.error.HTTPError as e:
   if e.code == 404:
-    print("no internet connection 😵 rebooting.....")
+    print(f"{R} no internet connection 😵 {C}rebooting..... {W}")
     time.sleep(2)
   else:
     os.system("rm $PREFIX/bin/darkos.py")
     os.system("wget -O darkos.py https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/darkos.py")
     os.system("mv darkos.py")
-    print("no update available ")
+    print(f"{C} no update available {W}")
     time.sleep(3)
 os.system("python3 $PREFIX/bin/run-darkos.py")
