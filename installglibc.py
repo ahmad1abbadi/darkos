@@ -9,6 +9,7 @@ C = "\033[1;36m"
 W = "\033[1;37m"
 BOLD = "\033[1m"
 
+
 def package_install_and_check(*packs_list):
     for package_name in packs_list:
         print(f"{R}[{W}-{R}]{G}{BOLD} Installing package: {C}{package_name} {W}")
@@ -20,10 +21,11 @@ def package_install_and_check(*packs_list):
         if subprocess.run(["dpkg", "-s", package_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE).returncode == 0:
             print(f"{R}[{W}-{R}]{G}{BOLD} {package_name} installed successfully {W}")
         else:
-            if subprocess.run(["type", "-p", package_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE).returncode == 0 or \
-                os.path.exists(f"{os.environ['PREFIX']}/bin/{package_name}*") or \
-                os.path.exists(f"{os.environ['PREFIX']}/bin/*{package_name}"):
+            which_output = subprocess.run(["which", package_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            if which_output.returncode == 0:
                 print(f"{R}[{W}-{R}]{G} {package_name} installed successfully {W}")
+            else:
+                print(f"{R}[{W}-{R}]{G} {package_name} installation failed {W}")
 
 def check_and_backup(file_path):
 
