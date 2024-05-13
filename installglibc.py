@@ -48,7 +48,7 @@ def termux_pkg():
     print(f"{R}[{W}-{R}]{G}{BOLD} glibc-repo + x11-repo installed {W}")
     package_install_and_check("pulseaudio", "patchelf", "xkeyboard-config", "freetype", "fontconfig", "termux-x11-nightly", "termux-am zenity", "which", "bash", "curl", "sed", "cabextract")
     print(f"{R}[{W}-{R}]{G}{BOLD}pulseaudio + termux-am +........... installed successfully {W}")
-    package_install_and_check("wget", "make", "libpng", "xorg-xrandr", "cmake", "unzip", "p7zip", "patchelf")
+    package_install_and_check("wget", "make", "libpng", "xorg-xrandr", "cmake", "unzip", "p7zip", "patchelf", "virglrenderer-android", "virglrenderer-mesa-zink")
     print(f"{R}[{W}-{R}]{G}{BOLD} patchelf + wget + make +........ installed successfully {W}")
     print("")
 def install_glibc_AZ():
@@ -153,7 +153,6 @@ def scripts():
     os.system("wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/cpu_boost.py &>/dev/null")
     os.system("chmod +x darkos")
     os.system("chmod +x winetricks")
-    os.system("chmod +x $PREFIX/glibc/opt/scripts/termux-x11.sh")
     os.system("mv darkos update-darkos.py darkos.py winetricks setting-darkos.py debug-darkos.py run-darkos.py cpu_boost.py photo.py $PREFIX/bin/")
     check_and_backup(".termux/colors.properties")
     os.system("wget -O $HOME/.termux/colors.properties https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/terminal_utility/colors.properties &>/dev/null")
