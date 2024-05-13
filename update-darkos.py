@@ -8,7 +8,7 @@ C = "\033[1;36m"
 W = "\033[1;37m"
 BOLD = "\033[1m"
 
-current_version = "0.911"
+current_version = "0.94"
 url = 'https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/currently%20version.txt'
 def remove():
     folder_path = '/data/data/com.termux/files/home'
@@ -31,14 +31,6 @@ latest_version = response.read().decode('utf-8').strip()
 try:
   if latest_version > current_version:
     print(f"{R}[{W}-{R}]{G}{BOLD} update available..... {C}updating......📥 {W}")
-    os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/AZ.tar.xz")
-    os.system("tar -xJf AZ.tar.xz -C $PREFIX/glibc")
-    os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/darkos.tar.xz")
-    os.system("tar -xJf darkos.tar.xz -C /sdcard/")
-    os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/update.tar.xz")
-    os.system("tar -xJf update.tar.xz")
-    os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/files.tar.xz")
-    os.system("tar -xJf files.tar.xz -C /data/data/com.termux/files")
     os.system("rm $PREFIX/bin/darkos.py")
     os.system("rm $PREFIX/bin/update-darkos.py")
     os.system("rm $PREFIX/bin/run-darkos.py")
@@ -51,9 +43,13 @@ try:
     os.system("wget -O debug-darkos.py https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/debug-darkos.py")
     os.system("wget -O setting-darkos.py https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/setting-darkos.py")
     os.system("wget -O update-darkos.py https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/update-darkos.py")
+    os.system("wget -O update-darkos.py https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/new-update.py")
     os.system("chmod +x darkos")
     os.system("mv update-darkos.py darkos.py run-darkos.py debug-darkos.py setting-darkos.py darkos $PREFIX/bin/")
+    os.system("python3 new-update.py")
+    time.sleep(2)
     remove()
+    os.system("rm new-update.py")
     print(f"{R}[{W}-{R}]{G}{BOLD} update completed 🎉 {W}")
     print(f"{G}{BOLD} rebooting.... {W}")
     time.sleep(3)
