@@ -6,6 +6,7 @@ import threading
 import shutil
 import sys, urllib.request, urllib.error
 
+
 R = "\033[1;31m"
 G = "\033[1;32m"
 Y = "\033[1;33m"
@@ -42,9 +43,11 @@ def load_conf():
     conf_paths = [
         "/data/data/com.termux/files/usr/glibc/opt/wine/os.conf",
         "/data/data/com.termux/files/usr/glibc/opt/darkos/res.conf",
+        "/data/data/com.termux/files/usr/glibc/opt/darkos/language.conf",
         "/sdcard/darkos/darkos_dynarec.conf",
         "/sdcard/darkos/darkos_dynarec_box86.conf",
-        "/sdcard/darkos/darkos_custom.conf"
+        "/sdcard/darkos/darkos_custom.conf",
+        "/data/data/com.termux/files/usr/glibc/opt/scripts/hud-settings.conf"
     ]
     for conf_path in conf_paths:
         exec(open(conf_path).read(), globals())
@@ -73,9 +76,8 @@ def create_wine_prefix():
     subprocess.run(["bash", "darkos"])
     exit()
 def start_wine():
-    os.system("chmod +x $PREFIX/glibc/opt/scripts/termux-x11.sh")
-    os.system("$PREFIX/glibc/opt/scripts/termux-x11.sh displayResolutionMode:custom")
-    os.system(f"$PREFIX/glibc/opt/scripts/termux-x11.sh displayResolutionCustom:{res}")
+    os.system("$PREFIX/glibc/opt/scripts/termux-x11.sh displayResolutionMode:custom &>/dev/null &")
+    os.system(f"$PREFIX/glibc/opt/scripts/termux-x11.sh displayResolutionCustom:{res} &>/dev/null &")
     os.system("box64 wine64 explorer /desktop=shell," + res + " $PREFIX/glibc/opt/apps/DARKOS_configuration.exe &>/dev/null &")
     os.system("am start -n com.termux.x11/com.termux.x11.MainActivity &>/dev/null")
     os.system("clear")
@@ -83,7 +85,7 @@ def start_wine():
     print("")
     print(f"{G}{BOLD} DARK OS is running...... {W}")
     print("")
-    print(f"{G}{BOLD} Press {C} 1 to SHUTDOWN {G}it... or {C}anything else to REBOOT{G}.. {W}")
+    print(f"{G}{BOLD} Press 1 to {C}SHUTDOWN {G} it... or anything else to {C}REBOOT{G}.. {W}")
 def restart_wine():
     while True:
         file_path = "/data/data/com.termux/files/usr/glibc/opt/darkos/file.reboot"
@@ -103,6 +105,35 @@ def update_wine():
         os.system(f"touch {file_path}")
         os.system("python3 $PREFIX/bin/update-darkos.py")
         exit()
+        
+def stop_virgl():
+    while True:
+        file_path = "/data/data/com.termux/files/usr/glibc/opt/darkos/file.stop-virgl"
+        while os.path.exists(file_path):
+            time.sleep(1)
+        os.system(f"touch {file_path}")
+        os.system("killall virgl_test_server")
+        os.system("ln -sf /data/data/com.termux/files/usr/glibc/lib/libGL.so.1.7.0 /data/data/com.termux/files/usr/glibc/lib/libGL.so.1")
+        unset_path = "/data/data/com.termux/files/usr/glibc/opt/scripts/unset.conf"
+        exec(open(unset_path).read(), globals())
+def start_virgl():
+    while True:
+        file_path = "/data/data/com.termux/files/usr/glibc/opt/darkos/file.start-virgl"
+        while os.path.exists(file_path):
+            time.sleep(1)
+        os.system(f"touch {file_path}")
+        unset_path = "/data/data/com.termux/files/usr/glibc/opt/scripts/unset.conf"
+        exec(open(unset_path).read(), globals())
+        time.sleep(2)
+        virgl_path = "/data/data/com.termux/files/usr/glibc/opt/scripts/virgl-settings.conf"
+        exec(open(virgl_path).read(), globals())
+def reload_style():
+    while True:
+        file_path = "/data/data/com.termux/files/usr/glibc/opt/darkos/file.style"
+        while os.path.exists(file_path):
+            time.sleep(1)
+        os.system(f"touch {file_path}")  
+        os.system("python3 $PREFIX/glibc/opt/scripts/theme-changer.py")
 def shutdown_wine():
     while True:
         file_path = "/data/data/com.termux/files/usr/glibc/opt/darkos/file.shutdown"
@@ -157,7 +188,7 @@ def stop_darkos():
     os.system('pkill -f "app_process / com.termux.x11"')
     os.system('pkill -f pulseaudio')
     print(f"{G}{BOLD} shutdown........ {W}")
-    subprocess.run("am startservice -a com.termux.service_stop com.termux/.app.TermuxService", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    os.system("am startservice -a com.termux.service_stop com.termux/.app.TermuxService")
     os.system("pkill -f com.termux.x11")
     subprocess.run(['am', 'broadcast', '-a', 'com.termux.x11.ACTION_STOP', '-p', 'com.termux.x11'])
     os._exit(0)
@@ -170,6 +201,9 @@ thread3 = threading.Thread(target=update_wine)
 thread4 = threading.Thread(target=settings_wine)
 thread5 = threading.Thread(target=debug_wine)
 thread6 = threading.Thread(target=shutdown_wine)
+thread7 = threading.Thread(target=start_virgl)
+thread8 = threading.Thread(target=stop_virgl)
+thread9 = threading.Thread(target=reload_style)
 
 thread1.start()
 thread2.start()
@@ -177,6 +211,9 @@ thread3.start()
 thread4.start()
 thread5.start()
 thread6.start()
+thread7.start()
+thread8.start()
+thread9.start()
 
 
 thread1.join()
@@ -185,3 +222,6 @@ thread3.join()
 thread4.join()
 thread5.join()
 thread6.join()
+thread7.join()
+thread8.join()
+thread9.join()
