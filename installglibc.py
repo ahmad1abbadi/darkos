@@ -49,7 +49,7 @@ def termux_pkg():
     print(f"{R}[{W}-{R}]{G}{BOLD} glibc-repo + x11-repo installed {W}")
     package_install_and_check("pulseaudio", "patchelf", "xkeyboard-config", "freetype", "fontconfig", "termux-x11-nightly", "termux-am zenity", "which", "bash", "curl", "sed", "cabextract")
     print(f"{R}[{W}-{R}]{G}{BOLD}pulseaudio + termux-am +........... installed successfully {W}")
-    package_install_and_check("wget", "make", "libpng", "xorg-xrandr", "cmake", "unzip", "p7zip", "patchelf", "virglrenderer-android", "virglrenderer-mesa-zink")
+    package_install_and_check("wget", "make", "libpng", "xorg-xrandr", "cmake", "unzip", "p7zip", "patchelf", "tur-repo", "virglrenderer-android", "virglrenderer-mesa-zink")
     print(f"{R}[{W}-{R}]{G}{BOLD} patchelf + wget + make +........ installed successfully {W}")
     print("")
 def install_glibc_AZ():
