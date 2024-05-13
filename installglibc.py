@@ -9,24 +9,23 @@ C = "\033[1;36m"
 W = "\033[1;37m"
 BOLD = "\033[1m"
 
-
 def package_install_and_check(*packs_list):
     for package_name in packs_list:
         print(f"{R}[{W}-{R}]{G}{BOLD} Installing package: {C}{package_name} {W}")
         result = subprocess.run(["pkg", "install", package_name, "-y"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         if result.returncode != 0:
-            subprocess.run(["apt", "--fix-broken", "install", "-y --no-install-recommends"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            subprocess.run(["apt", "--fix-broken", "install", "-y", "--no-install-recommends"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             subprocess.run(["dpkg", "--configure", "-a"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         
         if subprocess.run(["dpkg", "-s", package_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE).returncode == 0:
             print(f"{R}[{W}-{R}]{G}{BOLD} {package_name} installed successfully {W}")
         else:
-            which_output = subprocess.run(["which", package_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            if which_output.returncode == 0:
+            which_output = shutil.which(package_name)
+            if which_output:
                 print(f"{R}[{W}-{R}]{G} {package_name} installed successfully {W}")
             else:
                 print(f"{R}[{W}-{R}]{G} {package_name} installation failed {W}")
-
+                
 def check_and_backup(file_path):
 
     home_dir = os.path.expanduser("~")
