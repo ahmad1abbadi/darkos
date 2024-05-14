@@ -381,40 +381,69 @@ def auto_start():
     print("")
     print(f"{Y} else) back to settings menu {W}")
     choice = input()
+
     if choice != "1" and choice != "2":
         change_setting()
     elif choice == "1":
         command = "darkos"
-        bashrc_path = os.path.expanduser('~/.bashrc')
-        command_exists = False
-        if os.path.exists(bashrc_path):
-            with open(bashrc_path, 'r') as f:
-                for line in f:
-                    if command in line:
-                        command_exists = True
-                        print(f"{R}[{W}-{R}]{G}{BOLD} auto start os already activated... {W}")
-                        time.sleep(2)
-                        change_setting()
-        if not command_exists:
-            with open(bashrc_path, 'a') as f:
-                f.write(command + '\n')
-            print(f"{R}[{W}-{R}]{G}{BOLD} auto start os activated successfully {W}")
-            time.sleep(2)
-            change_setting()
+        shell_name = get_shell_name()
+        if shell_name:
+            activate_auto_start(command, shell_name)
+        else:
+            print(f"{R}Unable to determine current shell.{W}")
     elif choice == "2":
         command = "darkos"
-        bashrc_path = os.path.expanduser('~/.bashrc')
-        command_exists = False
-        if os.path.exists(bashrc_path):
-            with open(bashrc_path, 'r') as f:
-                lines = f.readlines()
-            with open(bashrc_path, 'w') as f:
-                for line in lines:
-                    if command not in line:
-                        f.write(line)
-            print(f"{R}[{W}-{R}]{G}{BOLD} Auto start os deactivated successfully {W}")
-            time.sleep(2)
-            change_setting()
+        shell_name = get_shell_name()
+        if shell_name:
+            deactivate_auto_start(command, shell_name)
+        else:
+            print(f"{R}Unable to determine current shell.{W}")
+
+def get_shell_name():
+    shell_path = os.getenv('SHELL')
+    if shell_path:
+        return os.path.basename(shell_path)
+    return None
+
+def activate_auto_start(command, shell_name):
+    shellrc_files = {
+        'bash': '.bashrc',
+        'zsh': '.zshrc',
+    }
+    shellrc_path = os.path.expanduser(f'~/{shellrc_files.get(shell_name, ".bashrc")}')
+    command_exists = False
+    if os.path.exists(shellrc_path):
+        with open(shellrc_path, 'r') as f:
+            for line in f:
+                if command in line:
+                    command_exists = True
+                    print(f"{G}Auto start os already activated in {C}{shell_name} {G}shell.{W}")
+                    time.sleep(2)
+                    change_setting()
+    if not command_exists:
+        with open(shellrc_path, 'a') as f:
+            f.write(command + '\n')
+        print(f"{G}Auto start os activated successfully in {C}{shell_name} {G}shell.{W}")
+        time.sleep(2)
+        change_setting()
+
+def deactivate_auto_start(command, shell_name):
+    shellrc_files = {
+        'bash': '.bashrc',
+        'zsh': '.zshrc',
+        'fish': 'config.fish'
+    }
+    shellrc_path = os.path.expanduser(f'~/{shellrc_files.get(shell_name, ".bashrc")}')
+    if os.path.exists(shellrc_path):
+        with open(shellrc_path, 'r') as f:
+            lines = f.readlines()
+        with open(shellrc_path, 'w') as f:
+            for line in lines:
+                if command not in line:
+                    f.write(line)
+        print(f"{G}Auto start os deactivated successfully in {C}{shell_name} {G}shell.{W}")
+        time.sleep(2)
+        change_setting()
 def styles():
     os.system("clear")
     photo()

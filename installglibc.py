@@ -45,9 +45,9 @@ def start_darkos():
     
 def termux_pkg():
     print(f"{R}[{W}-{R}]{G}{BOLD} This takes a few minutes it depends on your internet connection {W}")
-    os.system("pkg install glibc-repo x11-repo -y &>/dev/null")
+    package_install_and_check("glibc-repo", "x11-repo")
     print(f"{R}[{W}-{R}]{G}{BOLD} glibc-repo + x11-repo installed {W}")
-    package_install_and_check("pulseaudio", "patchelf", "xkeyboard-config", "freetype", "fontconfig", "termux-x11-nightly", "termux-am zenity", "which", "bash", "curl", "sed", "cabextract")
+    package_install_and_check("pulseaudio", "patchelf", "xkeyboard-config", "freetype", "fontconfig", "termux-x11-nightly", "termux-am" "zenity", "which", "bash", "curl", "sed", "cabextract")
     print(f"{R}[{W}-{R}]{G}{BOLD}pulseaudio + termux-am +........... installed successfully {W}")
     package_install_and_check("wget", "make", "libpng", "xorg-xrandr", "cmake", "unzip", "p7zip", "patchelf", "tur-repo", "virglrenderer-android", "virglrenderer-mesa-zink")
     print(f"{R}[{W}-{R}]{G}{BOLD} patchelf + wget + make +........ installed successfully {W}")
@@ -81,23 +81,30 @@ def install_conf():
     os.remove("darkos.tar.xz")
 def edit_bashrc():
     command = "darkos"
-    bashrc_path = os.path.expanduser('~/.bashrc')
+    shell_rc_path = None
+    current_shell = os.environ.get('SHELL', '').split('/')[-1]
+    shell_config_files = {
+    'bash': '.bashrc',
+    'zsh': '.zshrc',
+    }
+    if current_shell in shell_config_files:
+        shell_rc_path = os.path.expanduser(f'~/{shell_config_files[current_shell]}')
+if shell_rc_path:
     command_exists = False
-    if os.path.exists(bashrc_path):
-        with open(bashrc_path, 'r') as f:
+    if os.path.exists(shell_rc_path):
+        with open(shell_rc_path, 'r') as f:
             for line in f:
                 if command in line:
                     command_exists = True
-                    print(f"{R}[{W}-{R}]{G}{BOLD} Welcome back again ☺️ {W}")
+                    print(f"{B}Command {C}'{command}' {B}already exists in {C}{current_shell} {B}config file.{W}")
+                    print(f"{G}Welcome back again {W}☺️")
                     break
-        if not command_exists:
-            with open(bashrc_path, 'a') as f:
-                f.write(command + '\n')
-            print(" 📝")
-    else:
-        with open(bashrc_path, 'w') as f:
+    if not command_exists:
+        with open(shell_rc_path, 'a') as f:
             f.write(command + '\n')
-        print(" 📝")
+        print(f"{G}Command {C}'{command}' {G}added to {C}{current_shell} {G}config file. {W}")
+else:
+    print(f"{R}Current shell is not supported or cannot be determined.{R}")
 def create_prefix():
     conf_path = f"/data/data/com.termux/files/usr/glibc/opt/wine/1/os.conf"
     wine_prefix = f"/data/data/com.termux/files/usr/glibc/opt/wine/1/.wine"
