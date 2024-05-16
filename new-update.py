@@ -9,5 +9,5 @@ W = "\033[1;37m"
 BOLD = "\033[1m"
 
 current_version = "0.911"
-print("current_version")
+print(current_version)
 exit()
