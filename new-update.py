@@ -8,7 +8,7 @@ C = "\033[1;36m"
 W = "\033[1;37m"
 BOLD = "\033[1m"
 
-file_path = "/data/data/com.termux/files/usr/glibc/opt/dxvk/windows-support.7z
+file_path = "/data/data/com.termux/files/usr/glibc/opt/dxvk/windows-support.7z"
 def update_remove():
   if os.path.exists(file_path):
           os.remove(file_path)
