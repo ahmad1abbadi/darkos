@@ -31,5 +31,7 @@ while true; do
 done
 echo -e "${G}${BOLD}be patient\n"${W}
 pkg add python3 --no-install-recommends -y &>/dev/null
+pkg install python-pip -y
+pip install tqdm
 curl -o installglibc.py https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/installglibc.py && python3 installglibc.py
 exit

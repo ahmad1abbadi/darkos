@@ -1,5 +1,8 @@
 import os, shutil, time
 import subprocess
+import zipfile
+import tarfile
+from tqdm import tqdm
 
 R = "\033[1;31m"
 G = "\033[1;32m"
@@ -8,6 +11,44 @@ B = "\033[1;34m"
 C = "\033[1;36m"
 W = "\033[1;37m"
 BOLD = "\033[1m"
+
+def extract_archive(file_path, extract_to):
+    if not os.path.exists(file_path):
+        print(f"{R}File does not exist: {file_path}{W}")
+        return
+
+    if file_path.endswith('.zip'):
+        with zipfile.ZipFile(file_path, 'r') as zip_ref:
+            file_size = sum((file.file_size for file in zip_ref.infolist()))
+            with tqdm(total=file_size, unit='B', unit_scale=True, desc=f'{G}Extracting{C}', bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{rate_fmt}{postfix}]') as pbar:
+                for file in zip_ref.infolist():
+                    zip_ref.extract(file, extract_to)
+                    pbar.update(file.file_size)
+
+    elif file_path.endswith('.tar.gz') or file_path.endswith('.tgz') or file_path.endswith('.tar'):
+        with tarfile.open(file_path, 'r') as tar_ref:
+            file_size = sum((file.size for file in tar_ref.getmembers()))
+            with tqdm(total=file_size, unit='B', unit_scale=True, desc=f'{G}Extracting{C}', bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{rate_fmt}{postfix}]') as pbar:
+                for file in tar_ref.getmembers():
+                    tar_ref.extract(file, extract_to)
+                    pbar.update(file.size)
+
+    elif file_path.endswith('.tar.xz') or file_path.endswith('.txz'):
+        with tarfile.open(file_path, 'r:xz') as tar_ref:
+            file_size = sum((file.size for file in tar_ref.getmembers()))
+            with tqdm(total=file_size, unit='B', unit_scale=True, desc=f'{G}Extracting{C}', bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{rate_fmt}{postfix}]') as pbar:
+                for file in tar_ref.getmembers():
+                    tar_ref.extract(file, extract_to)
+                    pbar.update(file.size)
+
+    else:
+        print(f"{R}Unsupported file format{W}")
+        return
+
+    try:
+        os.remove(file_path)
+    except Exception as e:
+        print(f"{R}Error deleting archive file: {str(e)}{W}")
 
 def package_install_and_check(*packs_list):
     for package_name in packs_list:
@@ -26,10 +67,10 @@ def package_install_and_check(*packs_list):
             else:
                 print(f"{R}[{W}-{R}]{G} {package_name} installation failed {W}")
                 
-def check_and_backup(file_path):
+def check_and_backup(file_paths):
 
     home_dir = os.path.expanduser("~")
-    full_path = os.path.join(home_dir, file_path)
+    full_path = os.path.join(home_dir, file_paths)
 
     if os.path.exists(full_path):
         backup_path = f"{full_path}.bak"
@@ -47,64 +88,70 @@ def termux_pkg():
     print(f"{R}[{W}-{R}]{G}{BOLD} This takes a few minutes it depends on your internet connection {W}")
     package_install_and_check("glibc-repo", "x11-repo")
     print(f"{R}[{W}-{R}]{G}{BOLD} glibc-repo + x11-repo installed {W}")
-    package_install_and_check("pulseaudio", "patchelf", "xkeyboard-config", "freetype", "fontconfig", "termux-x11-nightly", "termux-am" "zenity", "which", "bash", "curl", "sed", "cabextract")
+    package_install_and_check("pulseaudio", "patchelf", "xkeyboard-config", "freetype", "fontconfig", "termux-x11-nightly", "termux-am", "zenity", "which", "bash", "curl", "sed", "cabextract")
     print(f"{R}[{W}-{R}]{G}{BOLD}pulseaudio + termux-am +........... installed successfully {W}")
     package_install_and_check("wget", "make", "libpng", "xorg-xrandr", "cmake", "unzip", "p7zip", "patchelf", "tur-repo", "virglrenderer-android", "virglrenderer-mesa-zink")
     print(f"{R}[{W}-{R}]{G}{BOLD} patchelf + wget + make +........ installed successfully {W}")
     print("")
 def install_glibc_AZ():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/glibc-darkos.tar.xz")
-    os.system("tar -xJf glibc-darkos.tar.xz -C $PREFIX/")
+
+
+#Extracting:  46%|▍| 1.27G/2.76G [00:37<00:47, 31.4MB/
+#                                |            |
+
+
+
+    extract_archive('glibc-darkos.tar.xz','/data/data/com.termux/files/usr/')
 def update():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/update.tar.xz")
-    os.system("tar -xJf update.tar.xz")
-    os.remove("update.tar.xz")
+    extract_archive('update.tar.xz','/data/data/com.termux/files/home/')
 def mangohud():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/mangohud.tar.xz")
     os.system("tar -xvvf mangohud.tar.xz --strip-components=6 -C $PREFIX/glibc &>/dev/null")
     os.remove("mangohud.tar.xz")
 def install_AZ():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/AZ.tar.xz")
-    os.system("tar -xJf AZ.tar.xz -C $PREFIX/glibc/")
-    os.remove("AZ.tar.xz")
+    extract_archive('AZ.tar.xz','/data/data/com.termux/files/usr/glibc/')
 def install_box():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/box.tar.xz")
-    os.system("tar -xJf box.tar.xz -C $PREFIX/glibc/bin")
-    os.remove("box.tar.xz")
+    extract_archive('box.tar.xz','/data/data/com.termux/files/usr/glibc/bin')
 def install_conf():
     folder_path = "/sdcard/darkos"
     if os.path.exists(folder_path):
         shutil.rmtree(folder_path)
     os.mkdir(folder_path)
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/darkos.tar.xz")
-    os.system("tar -xJf darkos.tar.xz -C /sdcard/")
-    os.remove("darkos.tar.xz")
+    extract_archive('darkos.tar.xz','/sdcard/')
+
 def edit_bashrc():
     command = "darkos"
     shell_rc_path = None
     current_shell = os.environ.get('SHELL', '').split('/')[-1]
     shell_config_files = {
-    'bash': '.bashrc',
-    'zsh': '.zshrc',
+        'bash': '.bashrc',
+        'zsh': '.zshrc',
     }
+    
     if current_shell in shell_config_files:
         shell_rc_path = os.path.expanduser(f'~/{shell_config_files[current_shell]}')
-if shell_rc_path:
-    command_exists = False
-    if os.path.exists(shell_rc_path):
-        with open(shell_rc_path, 'r') as f:
-            for line in f:
-                if command in line:
-                    command_exists = True
-                    print(f"{B}Command {C}'{command}' {B}already exists in {C}{current_shell} {B}config file.{W}")
-                    print(f"{G}Welcome back again {W}☺️")
-                    break
-    if not command_exists:
-        with open(shell_rc_path, 'a') as f:
-            f.write(command + '\n')
-        print(f"{G}Command {C}'{command}' {G}added to {C}{current_shell} {G}config file. {W}")
-else:
-    print(f"{R}Current shell is not supported or cannot be determined.{R}")
+
+    if shell_rc_path:
+        command_exists = False
+        if os.path.exists(shell_rc_path):
+            with open(shell_rc_path, 'r') as f:
+                for line in f:
+                    if command in line:
+                        command_exists = True
+                        print(f"Command '{command}' already exists in {current_shell} config file.")
+                        print("Welcome back again ☺️")
+                        break
+        if not command_exists:
+            with open(shell_rc_path, 'a') as f:
+                f.write(command + '\n')
+            #print(f"Command '{command}' added to {current_shell} config file.")
+    else:
+        print("Current shell is not supported or cannot be determined.")
 def create_prefix():
     conf_path = f"/data/data/com.termux/files/usr/glibc/opt/wine/1/os.conf"
     wine_prefix = f"/data/data/com.termux/files/usr/glibc/opt/wine/1/.wine"
@@ -142,12 +189,10 @@ def create_prefix():
     os.system("python3 $PREFIX/bin/run-darkos.py")
 def install_mono():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/mono.tar.xz")
-    os.system("tar -xJf mono.tar.xz")
-    os.remove("mono.tar.xz")
+    extract_archive('mono.tar.xz','/data/data/com.termux/files/home/')
 def install_wine9():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/wine-default.tar.xz")
-    os.system("tar -xJf wine-default.tar.xz -C $PREFIX/glibc/opt/wine/1")
-    os.remove("wine-default.tar.xz")
+    extract_archive('wine-default.tar.xz','/data/data/com.termux/files/usr/glibc/opt/wine/1/')
     os.system("apt reinstall vulkan-icd-loader-glibc -y &>/dev/null")
 def scripts():
     os.system("wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/update-darkos.py &>/dev/null")

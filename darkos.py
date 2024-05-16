@@ -5,6 +5,9 @@ import time
 import threading
 import shutil
 import sys, urllib.request, urllib.error
+import zipfile
+import tarfile
+from tqdm import tqdm
 
 R = "\033[1;31m"
 G = "\033[1;32m"
@@ -16,6 +19,44 @@ BOLD = "\033[1m"
 
 current_version = "0.94"
 url = 'https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/currently%20version.txt'
+
+def extract_archive(file_path, extract_to):
+    if not os.path.exists(file_path):
+        print(f"{R}File does not exist: {file_path}{W}")
+        return
+
+    if file_path.endswith('.zip'):
+        with zipfile.ZipFile(file_path, 'r') as zip_ref:
+            file_size = sum((file.file_size for file in zip_ref.infolist()))
+            with tqdm(total=file_size, unit='B', unit_scale=True, desc=f'{G}Extracting{C}', bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{rate_fmt}{postfix}]') as pbar:
+                for file in zip_ref.infolist():
+                    zip_ref.extract(file, extract_to)
+                    pbar.update(file.file_size)
+
+    elif file_path.endswith('.tar.gz') or file_path.endswith('.tgz') or file_path.endswith('.tar'):
+        with tarfile.open(file_path, 'r') as tar_ref:
+            file_size = sum((file.size for file in tar_ref.getmembers()))
+            with tqdm(total=file_size, unit='B', unit_scale=True, desc=f'{G}Extracting{C}', bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{rate_fmt}{postfix}]') as pbar:
+                for file in tar_ref.getmembers():
+                    tar_ref.extract(file, extract_to)
+                    pbar.update(file.size)
+
+    elif file_path.endswith('.tar.xz') or file_path.endswith('.txz'):
+        with tarfile.open(file_path, 'r:xz') as tar_ref:
+            file_size = sum((file.size for file in tar_ref.getmembers()))
+            with tqdm(total=file_size, unit='B', unit_scale=True, desc=f'{G}Extracting{C}', bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{rate_fmt}{postfix}]') as pbar:
+                for file in tar_ref.getmembers():
+                    tar_ref.extract(file, extract_to)
+                    pbar.update(file.size)
+
+    else:
+        print(f"{R}Unsupported file format{W}")
+        return
+
+    try:
+        os.remove(file_path)
+    except Exception as e:
+        print(f"{R}Error deleting archive file: {str(e)}{W}")
 
 def colored_input(prompt):
     print(f"{R}[{W}-{R}]{G}{BOLD} {prompt} {W}", end="")
@@ -368,8 +409,7 @@ def Compile():
     os.system("pkg install -y git; unset LD_PRELOAD; export GLIBC_PREFIX=/data/data/com.termux/files/usr/glibc; export PATH=$GLIBC_PREFIX/bin:$PATH; cd ~/; git clone https://github.com/ptitSeb/box64; cd ~/box64; sed -i 's/\/usr/\/data\/data\/com.termux\/files\/usr\/glibc/g' CMakeLists.txt; sed -i 's/\/etc/\/data\/data\/com.termux\/files\/usr\/glibc\/etc/g' CMakeLists.txt; mkdir build; cd build; cmake --install-prefix $PREFIX/glibc .. -DARM_DYNAREC=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBAD_SIGNAL=ON -DSD845=ON; make -j8; make install")
 def install_wine9():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/wine-default.tar.xz")
-    os.system("tar -xJf wine-default.tar.xz -C $PREFIX/glibc/opt/wine/1")
-    os.remove("wine-default.tar.xz")
+    extract_archive('wine-default.tar.xz','/data/data/com.termux/files/usr/glibc/opt/wine/1/')
 def auto_start():
     os.system("clear")
     photo()

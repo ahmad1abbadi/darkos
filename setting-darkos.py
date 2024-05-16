@@ -2,6 +2,9 @@ import os, time, shutil, sys, subprocess, urllib.request, urllib.error
 import tarfile
 import socket
 import fnmatch
+import zipfile
+import tarfile
+from tqdm import tqdm
 
 R = "\033[1;31m"
 G = "\033[1;32m"
@@ -9,13 +12,47 @@ Y = "\033[1;33m"
 B = "\033[1;34m"
 C = "\033[1;36m"
 W = "\033[1;37m"
-BOLD = "\033[1m"
+BOLD = "\033[1m" 
 
 tar_xz_file_path ='/sdcard/darkos/airidosas252builds/wine.tar.xz'
 target_folders = ['bin', 'lib', 'lib64', 'share']
 destination_dir = '/data/data/com.termux/files/usr/glibc/opt/wine/3/wine'
 root_dir = "/data/data/com.termux/files/usr/glibc/opt/temp"
 os.system("am start -n com.termux/.HomeActivity")
+
+def extract_archive(file_path, extract_to):
+    if not os.path.exists(file_path):
+        print(f"{R}File does not exist: {file_path}{W}")
+        return
+
+    if file_path.endswith('.zip'):
+        with zipfile.ZipFile(file_path, 'r') as zip_ref:
+            file_size = sum((file.file_size for file in zip_ref.infolist()))
+            with tqdm(total=file_size, unit='B', unit_scale=True, desc=f'{G}Extracting{C}', bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{rate_fmt}{postfix}]') as pbar:
+                for file in zip_ref.infolist():
+                    zip_ref.extract(file, extract_to)
+                    pbar.update(file.file_size)
+
+    elif file_path.endswith('.tar.gz') or file_path.endswith('.tgz') or file_path.endswith('.tar'):
+        with tarfile.open(file_path, 'r') as tar_ref:
+            file_size = sum((file.size for file in tar_ref.getmembers()))
+            with tqdm(total=file_size, unit='B', unit_scale=True, desc=f'{G}Extracting{C}', bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{rate_fmt}{postfix}]') as pbar:
+                for file in tar_ref.getmembers():
+                    tar_ref.extract(file, extract_to)
+                    pbar.update(file.size)
+
+    elif file_path.endswith('.tar.xz') or file_path.endswith('.txz'):
+        with tarfile.open(file_path, 'r:xz') as tar_ref:
+            file_size = sum((file.size for file in tar_ref.getmembers()))
+            with tqdm(total=file_size, unit='B', unit_scale=True, desc=f'{G}Extracting{C}', bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{rate_fmt}{postfix}]') as pbar:
+                for file in tar_ref.getmembers():
+                    tar_ref.extract(file, extract_to)
+                    pbar.update(file.size)
+
+    else:
+        print(f"{R}Unsupported file format{W}")
+        return
+
 def remove():
     folder_path = '/data/data/com.termux/files/home'
     for filename in os.listdir(folder_path):
@@ -32,13 +69,13 @@ def uninstall_wine9():
         os.system("rm -r /sdcard/darkos")
 def install_wine9():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/AZ.tar.xz")
-    os.system("tar -xJf AZ.tar.xz -C $PREFIX/glibc")
+    extract_archive('AZ.tar.xz','/data/data/com.termux/files/usr/glibc/')
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/wine-default.tar.xz")
-    os.system("tar -xJf wine-default.tar.xz -C $PREFIX/glibc/opt/wine/1")
+    extract_archive('wine-default.tar.xz','/data/data/com.termux/files/usr/glibc/opt/wine/1/')
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/darkos.tar.xz")
-    os.system("tar -xJf darkos.tar.xz -C /sdcard/")
+    extract_archive('darkos.tar.xz','/sdcard/')
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/update.tar.xz")
-    os.system("tar -xJf update.tar.xz")
+    extract_archive('update.tar.xz','/data/data/com.termux/files/home/')
     os.system("rm $PREFIX/bin/darkos.py")
     os.system("rm $PREFIX/bin/update-darkos.py")
     os.system("rm $PREFIX/bin/run-darkos.py")
@@ -192,7 +229,7 @@ def wine_select():
         print("")
         if not os.path.exists("/data/data/com.termux/files/usr/glibc/opt/wine/3/wine/bin"):
             if os.path.exists("/sdcard/darkos/airidosas252builds/wine.tar.xz"):
-                os.system("tar -xJf /sdcard/darkos/airidosas252builds/wine.tar.xz -C $PREFIX/glibc/opt/temp")
+                extract_archive('/sdcard/darkos/airidosas252builds/wine.tar.xz','/data/data/com.termux/files/usr/glibc/opt/temp/')
             search_and_move_folders(root_dir, target_folders, destination_dir)
         install_wine3()
         time.sleep(1)

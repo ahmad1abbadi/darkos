@@ -85,7 +85,7 @@ def start_wine():
     print("")
     print(f"{G}{BOLD} DARK OS is running...... {W}")
     print("")
-    print(f"{G}{BOLD} Press 1 to {C}SHUTDOWN {G} it... or anything else to {C}REBOOT{G}.. {W}")
+    print(f"{G}{BOLD} Press {C}1 to SHUTDOWN {G} it... or {C}anything else to REBOOT{G}.. {W}")
 def restart_wine():
     while True:
         file_path = "/data/data/com.termux/files/usr/glibc/opt/darkos/file.reboot"
