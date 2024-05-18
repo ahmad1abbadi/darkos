@@ -83,9 +83,16 @@ def start_wine():
     os.system("clear")
     os.system("python3 $PREFIX/bin/photo.py")
     print("")
-    print(f"{G}{BOLD} DARK OS is running...... {W}")
+    print(f" {R}{BOLD}D{G}{BOLD}A{Y}{BOLD}R{B}{W}{BOLD}K{R}{BOLD} O{C}{BOLD}S{G}{BOLD} is running...... {W}")
     print("")
-    print(f"{G}{BOLD} Press {C}1 to SHUTDOWN {G} it... or {C}anything else to REBOOT{G}.. {W}")
+    print(f"{G}{BOLD} Please choose an option: ")
+    print("")
+    print(f"{G}{BOLD} (1) for {C}SHUTDOWN{W}")
+    print("")
+    print(f"{G}{BOLD} (2) for exit to the {C}terminal{W}")
+    print("")
+    print(f"{G}{BOLD} Simply press any other key to {C}REBOOT{W}")
+    print("")
 def restart_wine():
     while True:
         file_path = "/data/data/com.termux/files/usr/glibc/opt/darkos/file.reboot"
@@ -167,7 +174,7 @@ def settings_wine():
 def input_action():
     while True:
         stop = input()
-        if stop != "1":
+        if stop != "1" and stop != "2":
             print("")
             print(f"{G}{BOLD} Rebooting......... {W}")
             os.system("box64 wineserver -k &>/dev/null")
@@ -175,6 +182,13 @@ def input_action():
             restart_program() 
         elif stop == "1":
             stop_darkos()
+        elif stop == "2":
+            os.system("box64 wineserver -k")
+            os.system('pkill -f "app_process / com.termux.x11"')
+            os.system('pkill -f pulseaudio')
+            print(f"{G}{BOLD} exiting to the terminal goodbye {W}")
+            time.sleep(2)
+            os._exit(0)
 def restart_program():
     extract_and_delete_tar_files()                
     load_conf()

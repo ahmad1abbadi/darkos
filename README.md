@@ -122,10 +122,6 @@ For touch controls Input Bridge app is required.
 
 ## Known issues
 * termux app can show signal 9 when using wine or while compiling box64, in this case you have to disable phantom process.
-
-## To-do list
-* virgl
-* support for non Snapdragon chips
   
 ## Support Darkos
 [buy me a coffee](https://www.buymeacoffee.com/AZabbadi)
