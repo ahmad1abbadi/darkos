@@ -17,7 +17,10 @@ def update_alsa():
   os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/alsa.tar.xz")
   os.system("tar -xJf alsa.tar.xz -C /data/data/com.termux/files/")
   os.remove("alsa.tar.xz")
-    
+def update():
+    os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/update.tar.xz")
+    os.system("tar -xJf update.tar.xz")
+    os.remove("update.tar.xz")    
 def update_files():
   os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/files.tar.xz")
   os.system("tar -xJf files.tar.xz -C /data/data/com.termux/files/")
@@ -26,6 +29,8 @@ def update_files():
 current_version = "0.96"
 update_remove()
 update_files()
+update_alsa()
+update()
 print(current_version)
 print(f"{Y}update complete")
 time.sleep(2)
