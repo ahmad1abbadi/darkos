@@ -535,7 +535,7 @@ def change_setting():
         print(f"{R}[{W}-{R}]{G}{BOLD} fixing pip install {W}")
         os.system('pip_fixer')
         print("")
-        os.system('pip install aiofiles psutil blessings -y &> /dev/null')
+        os.system('pip install aiofiles psutil blessings &> /dev/null')
         print(f"{R}[{W}-{R}]{G} python packages.... 100% {W}")
         print("")
         print(f"{R}[{W}-{R}]{G}{BOLD} starting boost 💥 {W}")
