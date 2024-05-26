@@ -14,6 +14,7 @@ def update_remove():
           os.remove(file_path)
     
 def update_alsa():
+  os.system("apt install alsa-lib-glibc -y")
   os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/alsa.tar.xz")
   os.system("tar -xJf alsa.tar.xz -C /data/data/com.termux/files/")
   os.remove("alsa.tar.xz")
