@@ -62,7 +62,7 @@ def update():
 def alsa():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/alsa.tar.xz")
     os.system("tar -xJf alsa.tar.xz -C /data/data/com.termux/files/ &>/dev/null")
-    os.remove("update.tar.xz")    
+    os.remove("alsa.tar.xz")    
 def mangohud():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/mangohud.tar.xz")
     os.system("tar -xvvf mangohud.tar.xz --strip-components=6 -C $PREFIX/glibc &>/dev/null")
