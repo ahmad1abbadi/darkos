@@ -126,24 +126,22 @@ def recreate_32bit():
     if prefix_path not in wine_paths.keys():
         change_setting()
     else:
-        conf_path = f"/data/data/com.termux/files/usr/glibc/opt/wine/1/os.conf"
+        conf_path = f"/data/data/com.termux/files/usr/glibc/opt/wine/{prefix_path}/os.conf"
         wine_prefix = f"/data/data/com.termux/files/usr/glibc/opt/wine/{prefix_path}/.wine"
         os.system("chmod +x $PREFIX/glibc/bin/box86")
         os.system("chmod +x $PREFIX/glibc/bin/box64")
-        os.system(f"chmod +x /data/data/com.termux/files/usr/glibc/opt/wine/1/wine/bin/wine")
-        os.system(f"chmod +x /data/data/com.termux/files/usr/glibc/opt/wine/1/wine/bin/wine64")
-        os.system(f"chmod +x /data/data/com.termux/files/usr/glibc/opt/wine/1/wine/bin/wineserver")
-        os.system("rm -rf $PREFIX/glibc/bin/wine $PREFIX/glibc/bin/wine64 $PREFIX/glibc/bin/wineserver")
-        os.system(f"ln -sf /data/data/com.termux/files/usr/glibc/opt/wine/1/wine/bin/wine $PREFIX/glibc/bin/wine")
-        os.system(f"ln -sf /data/data/com.termux/files/usr/glibc/opt/wine/1/wine/bin/wine64 $PREFIX/glibc/bin/wine64")
-        os.system(f"ln -sf /data/data/com.termux/files/usr/glibc/opt/wine/1/wine/bin/wineserver $PREFIX/glibc/bin/wineserver")
-        os.system(f"ln -sf /data/data/com.termux/files/usr/glibc/opt/wine/1/wine/bin/wineboot $PREFIX/glibc/bin/wineboot")
-        os.system(f"ln -sf /data/data/com.termux/files/us/glibc/opt/wine/1/wine/bin/winecfg $PREFIX/glibc/bin/winecfg")
+        os.system(f"chmod +x /data/data/com.termux/files/usr/glibc/opt/wine/{prefix_path}/wine/bin/wine")
+        os.system(f"chmod +x /data/data/com.termux/files/usr/glibc/opt/wine/{prefix_path}/wine/bin/wineserver")
+        os.system(f"ln -sf /data/data/com.termux/files/usr/glibc/opt/wine/{prefix_path}/wine/bin/wine $PREFIX/glibc/bin/wine")
+        os.system(f"ln -sf /data/data/com.termux/files/usr/glibc/opt/wine/{prefix_path}/wine/bin/wine64 $PREFIX/glibc/bin/wine64")
+        os.system(f"ln -sf /data/data/com.termux/files/usr/glibc/opt/wine/{prefix_path}/wine/bin/wineserver $PREFIX/glibc/bin/wineserver")
+        os.system(f"ln -sf /data/data/com.termux/files/usr/glibc/opt/wine/{prefix_path}/wine/bin/wineboot $PREFIX/glibc/bin/wineboot")
+        os.system(f"ln -sf /data/data/com.termux/files/us/glibc/opt/wine/{prefix_path}/wine/bin/winecfg $PREFIX/glibc/bin/winecfg")
         os.environ.pop('LD_PRELOAD', None)
         ### AZ DARK 
         exec(open(conf_path).read())
         def prefix_gstreamer():
-            os.environ['WINEPREFIX'] = os.path.expandvars("$PREFIX/glibc/opt/wine/3/.wine")
+            os.environ['WINEPREFIX'] = wine_prefix
             print(f"{R}[{W}-{R}]{G}{BOLD} Fixing wine prefix .... {W}")
             os.system(f'WINEDLLOVERRIDES="mscoree=disabled" box64 wine64 wineboot &>/dev/null')
             os.system(f'cp -r $PREFIX/glibc/opt/Startxmenu/* "{wine_prefix}/drive_c/ProgramData/Microsoft/Windows/Start Menu"')
@@ -519,16 +517,29 @@ def change_setting():
     elif choice == "8":
         os.system("clear")
         photo()
+        pip_fixer_file = "/data/data/com.termux/files/usr/bin/pip_fixer"
+        boost_launcher_file = "/data/data/com.termux/files/usr/bin/boost_launcher"
+        if not os.path.exists(pip_fixer_file):
+            os.system("wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/pip_fixer &>/dev/null")
+            os.system("chmod +x pip_fixer")
+            os.system("mv pip_fixer $PREFIX/bin/")
+        if not os.path.exists(boost_launcher_file):
+            os.system("wget https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/boost_launcher &>/dev/null")
+            os.system("chmod +x boost_launcher")
+            os.system("mv boost_launcher  $PREFIX/bin/")
         print(f"{Y} loading......... {W}")
         reload()
-        new_sesson()
         print(f"{R}[{W}-{R}]{G}{BOLD} installing python packages {W}")
-        os.system('pkg install python vulkan-tools python-pip coreutils &> /dev/null')
+        os.system('pkg install python vulkan-tools python-pip coreutils -y &> /dev/null')
+        print("")
+        print(f"{R}[{W}-{R}]{G}{BOLD} fixing pip install {W}")
+        os.system('pip_fixer')
         print("")
         os.system('pip install aiofiles psutil blessings &> /dev/null')
         print(f"{R}[{W}-{R}]{G} python packages.... 100% {W}")
         print("")
         print(f"{R}[{W}-{R}]{G}{BOLD} starting boost 💥 {W}")
+        new_sesson()
         time.sleep(3)
         print("")
         print(f"{R}[{W}-{R}]{G} check the new session for more info 👀 {W}")
@@ -594,8 +605,8 @@ def reload():
 def new_sesson():
     os.system("am startservice --user 0 -n com.termux/com.termux.app.RunCommandService \
     -a com.termux.RUN_COMMAND \
-    --es com.termux.RUN_COMMAND_PATH '/data/data/com.termux/files/usr/bin/python' \
-    --esa com.termux.RUN_COMMAND_ARGUMENTS '/data/data/com.termux/files/usr/bin/cpu_boost.py' \
+    --es com.termux.RUN_COMMAND_PATH '/data/data/com.termux/files/usr/bin/bash' \
+    --esa com.termux.RUN_COMMAND_ARGUMENTS '/data/data/com.termux/files/usr/bin/boost_launcher' \
     --es com.termux.RUN_COMMAND_WORKDIR '/data/data/com.termux/files/home' \
     --ez com.termux.RUN_COMMAND_BACKGROUND 'false' \
     --es com.termux.RUN_COMMAND_SESSION_ACTION '1' &> /dev/null ")
