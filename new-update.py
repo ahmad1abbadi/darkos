@@ -12,7 +12,9 @@ file_path = "/data/data/com.termux/files/usr/glibc/opt/box/V2.7( 11 may).tar.xz"
 def update_remove():
   if os.path.exists(file_path):
           os.remove(file_path)
-    
+def pg():
+  os.system(pkg install python-pip)
+  os.system(pip install tqdm)
 def update_alsa():
   os.system("apt install alsa-lib-glibc -y")
   os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/alsa.tar.xz")
@@ -27,10 +29,11 @@ def update_files():
   os.system("tar -xJf files.tar.xz -C /data/data/com.termux/files/")
   os.remove("files.tar.xz")
     
-current_version = "0.96"
+current_version = "0.9611"
 update_remove()
 update_files()
 update_alsa()
+pg()
 update()
 print(current_version)
 print(f"{Y}update complete")
