@@ -139,6 +139,8 @@ For touch controls Input Bridge app is required.
 
 [Ilan12346-maya](https://github.com/Ilan12346-maya)
   
+[GabiAle97](https://github.com/GabiAle97)
+
 #
 
 thanks to our testers:
