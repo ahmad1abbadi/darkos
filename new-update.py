@@ -13,8 +13,8 @@ def update_remove():
   if os.path.exists(file_path):
           os.remove(file_path)
 def pg():
-  os.system(pkg install python-pip)
-  os.system(pip install tqdm)
+  os.system("pkg install python-pip")
+  os.system("pip install tqdm")
 def update_alsa():
   os.system("apt install alsa-lib-glibc -y")
   os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/alsa.tar.xz")
