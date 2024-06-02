@@ -7,6 +7,46 @@ C="$(printf '\033[1;36m')"
 W="$(printf '\033[1;37m')"
 BOLD="$(printf '\033[1m')"
 
+package_install_and_check() {
+	packs_list=($@)
+	for package_name in "${packs_list[@]}"; do
+    echo "${R}[${W}-${R}]${G}${BOLD} Installing package: ${C}$package_name "${W}
+    pkg install "$package_name" -y &>/dev/null
+	if [ $? -ne 0 ]; then
+    apt --fix-broken install -y
+	dpkg --Configuring -a
+    fi
+	if dpkg -s "$package_name" >/dev/null 2>&1; then
+    echo "${R}[${W}-${R}]${G} $package_name installed successfully "${W}
+	else
+	if
+    type -p "$package_name" &>/dev/null || [ -e "$PREFIX/bin/$package_name"* ] || [ -e "$PREFIX/bin/"*"$package_name" ]; then
+        echo "${R}[${W}-${R}]${C} $package_name ${G}installed successfully "${W}
+	fi
+    fi
+done
+
+}
+
+pip_install_and_check() {
+    pip_list=($@)
+    for pip_name in "${pip_list[@]}"; do
+        echo -e "${R}[${W}-${R}]${G}${BOLD} Installing module: ${C}$pip_name ${W}"
+        pip install "$pip_name" &>/dev/null
+
+        # Check if the installation was successful
+        if [ $? -ne 0 ]; then
+            echo -e "${R}[${W}-${R}]${R}${BOLD} Error installing: ${C}$pip_name ${W}"
+        else
+            if python3 -c "import $pip_name" &>/dev/null; then
+                echo -e "${R}[${W}-${R}]${G} $pip_name installed successfully ${W}"
+            else
+                echo -e "${R}[${W}-${R}]${R}${BOLD} $pip_name installation failed ${W}"
+            fi
+	fi
+    done
+}
+
 clear
 echo -e "${G}${BOLD}Updating termux packages list please wait\n"${W}
 apt update &>/dev/null
@@ -30,8 +70,7 @@ while true; do
     sleep 2
 done
 echo -e "${G}${BOLD}be patient\n"${W}
-pkg add python3 --no-install-recommends -y &>/dev/null
-pkg install python-pip -y
-pip install tqdm
+package_install_and_check "python3 python-pip"
+pip_install_and_check "tqdm"
 curl -o installglibc.py https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/installglibc.py && python3 installglibc.py
 exit
