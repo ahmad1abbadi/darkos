@@ -15,11 +15,10 @@ def update_remove():
 def pg():
   os.system("pkg install python-pip")
   os.system("pip install tqdm")
-def update_alsa():
-  os.system("apt install alsa-lib-glibc -y")
-  os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/alsa.tar.xz")
-  os.system("tar -xJf alsa.tar.xz -C /data/data/com.termux/files/")
-  os.remove("alsa.tar.xz")
+def mangohud():
+    os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/mangohud.tar.xz")
+    os.system("tar -xJvf mangohud.tar.xz -C $PREFIX/glibc &>/dev/null")
+    os.remove("mangohud.tar.xz")
 def update():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/update.tar.xz")
     os.system("tar -xJf update.tar.xz")
@@ -29,10 +28,10 @@ def update_files():
   os.system("tar -xJf files.tar.xz -C /data/data/com.termux/files/")
   os.remove("files.tar.xz")
     
-current_version = "0.9611"
+current_version = "0.962"
 update_remove()
 update_files()
-update_alsa()
+mangohud()
 pg()
 update()
 print(current_version)

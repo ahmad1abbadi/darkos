@@ -17,7 +17,7 @@ C = "\033[1;36m"
 W = "\033[1;37m"
 BOLD = "\033[1m"
 
-current_version = "0.9611"
+current_version = "0.962"
 url = 'https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/currently%20version.txt'
 
 def extract_archive(file_path, extract_to):
