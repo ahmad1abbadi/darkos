@@ -8,7 +8,7 @@ C = "\033[1;36m"
 W = "\033[1;37m"
 BOLD = "\033[1m"
 
-file_path = "/data/data/com.termux/files/usr/glibc/opt/box/V2.7( 11 may).tar.xz"
+file_path = "/data/data/com.termux/files/usr/glibc/opt/box/V2.7( 26 apr).tar.xz"
 def update_remove():
   if os.path.exists(file_path):
           os.remove(file_path)
@@ -28,12 +28,10 @@ def update_files():
   os.system("tar -xJf files.tar.xz -C /data/data/com.termux/files/")
   os.remove("files.tar.xz")
     
-current_version = "0.962"
+current_version = "0.963"
 update_remove()
 update_files()
-mangohud()
 pg()
-update()
 print(current_version)
 print(f"{Y}update complete")
 time.sleep(2)
