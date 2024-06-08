@@ -95,7 +95,7 @@ def termux_pkg():
     print("")
 def install_glibc_AZ():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/glibc-darkos.tar.xz")
-    extract_archive('glibc-darkos.tar.xz','/data/data/com.termux/files/usr/')
+    os.system("tar -xJf glibc-darkos.tar.xz -C $PREFIX/")
 def update():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/update.tar.xz")
     extract_archive('update.tar.xz','/data/data/com.termux/files/home/')
