@@ -1,0 +1,3 @@
+#!/bin/bash
+
+vlc --fullscreen --x11-display=:0.0 --quiet --play-and-exit $PREFIX/glibc/opt/darkos/logo.mp4 && exit
