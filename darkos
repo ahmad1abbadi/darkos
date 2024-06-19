@@ -11,7 +11,7 @@ clear
 python3 $PREFIX/bin/photo.py $@
 echo "${G}${BOLD} PRESS 1 TO ENTER SAFE MODE ....... "${W}
 read -t 2 -n1 -s key
-
+pkill -9 pulseaudio 
 if [[ "$key" == "1" ]]; then
     echo "${G}${BOLD} Safe MODE DARKOS.....STARTING"${W}
     termux-x11 :0 &>/dev/null &
