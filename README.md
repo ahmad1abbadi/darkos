@@ -152,7 +152,7 @@ Huge thanks to:
 
 [airidosas252](https://github.com/airidosas252) for his turnip and wine builds.
 #
-Special thanks to ptitSeb, Maxython, glibc-runner, hardray, Tωaik, zhongerxll , hugo, jeezdisreez, olegos2 and others for help.
+Special thanks to ptitSeb, Maxython, glibc-runner, hardray, Tωaik, zhongerxll , hugo, .[jeezdisreez](https://github.com/Pipetto-crypto), olegos2 and others for help.
 
 [Darkos telegram group](https://t.me/DARKOS4android)
 
