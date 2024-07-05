@@ -67,6 +67,9 @@ def create_wine_prefix():
     os.system(f'ln -s /data/data/com.termux/files "{wine_prefix}/dosdevices/z:"')
     print(f"{R}[{W}-{R}]{G}{BOLD} Installing OS stuff... {W}")
     os.system(f'box64 wine64 "$PREFIX/glibc/opt/apps/Install OS stuff.bat" &>/dev/null')
+    if os.path.exists(f"/data/data/com.termux/files/usr/glibc/opt/wine/{container}/wine/add-ons.bat"):
+        os.system(f'box64 wine64 "$PREFIX/glibc/opt/wine/{container}/wine/add-ons.bat" &>/dev/null')
+        print("add-ons installed")
     print(f"{R}[{W}-{R}]{G}{BOLD} Done! {W}")
     print(f"{G}{BOLD} prefix done enjoy 🤪 {W}")
     time.sleep(1)
