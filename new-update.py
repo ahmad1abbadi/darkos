@@ -8,10 +8,13 @@ C = "\033[1;36m"
 W = "\033[1;37m"
 BOLD = "\033[1m"
 
-file_path = "/data/data/com.termux/files/usr/glibc/opt/box/V2.7( 26 apr).tar.xz"
+file_path = "/data/data/com.termux/files/usr/glibc/opt/box/V2.8( 5 june).tar.xz"
+file_path2 = "/data/data/com.termux/files/usr/glibc/opt/box/V2.8( 3 july).tar.xz"
 def update_remove():
   if os.path.exists(file_path):
           os.remove(file_path)
+  if os.path.exists(file_path2):
+          os.remove(file_path2)
 def pg():
   os.system("pkg install python-pip")
   os.system("pip install tqdm")
@@ -28,7 +31,7 @@ def update_files():
   os.system("tar -xJf files.tar.xz -C /data/data/com.termux/files/")
   os.remove("files.tar.xz")
     
-current_version = "0.963"
+current_version = "0.97"
 update_remove()
 update_files()
 pg()
