@@ -10,7 +10,7 @@ BOLD = "\033[1m"
 
 file_path = "/data/data/com.termux/files/usr/glibc/opt/box/V2.8( 5 june).tar.xz"
 file_path2 = "/data/data/com.termux/files/usr/glibc/opt/box/V2.8( 3 july).tar.xz"
-file_path2 = "/data/data/com.termux/files/usr/glibc/opt/box/V2.7( 3 mar).tar.xz"
+file_path3 = "/data/data/com.termux/files/usr/glibc/opt/box/V2.7( 3 mar).tar.xz"
 file_path4 = "/data/data/com.termux/files/usr/glibc/opt/box/V2.7( 14 feb).tar.xz"
 def update_remove():
   if os.path.exists(file_path):
