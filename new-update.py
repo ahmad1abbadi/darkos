@@ -10,14 +10,19 @@ BOLD = "\033[1m"
 
 file_path = "/data/data/com.termux/files/usr/glibc/opt/box/V2.8( 5 june).tar.xz"
 file_path2 = "/data/data/com.termux/files/usr/glibc/opt/box/V2.8( 3 july).tar.xz"
+file_path2 = "/data/data/com.termux/files/usr/glibc/opt/box/V2.7( 3 mar).tar.xz"
+file_path4 = "/data/data/com.termux/files/usr/glibc/opt/box/V2.7( 14 feb).tar.xz"
 def update_remove():
   if os.path.exists(file_path):
           os.remove(file_path)
   if os.path.exists(file_path2):
           os.remove(file_path2)
+  if os.path.exists(file_path3):
+          os.remove(file_path3)
+  if os.path.exists(file_path4):
+          os.remove(file_path4)
 def pg():
-  os.system("pkg install python-pip")
-  os.system("pip install tqdm")
+  os.system("apt install traceroute samba -y")
 def mangohud():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/mangohud.tar.xz")
     os.system("tar -xJvf mangohud.tar.xz -C $PREFIX/glibc &>/dev/null")
@@ -31,7 +36,7 @@ def update_files():
   os.system("tar -xJf files.tar.xz -C /data/data/com.termux/files/")
   os.remove("files.tar.xz")
     
-current_version = "0.97"
+current_version = "0.971"
 update_remove()
 update_files()
 pg()
