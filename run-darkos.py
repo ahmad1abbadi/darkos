@@ -104,6 +104,7 @@ def restart_wine():
             time.sleep(1) 
         os.system("box64 wineserver -k &>/dev/null")
         print(f"{G}{BOLD} Restarting WINE {W}")
+        os.system("pkill -9 "\.exe$"")
         os.system(f"touch {file_path}")
         restart_program() 
 def update_wine():
