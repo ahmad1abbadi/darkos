@@ -9,7 +9,7 @@ G = "\033[1;32m"
 Y = "\033[1;33m"
 B = "\033[1;34m"
 C = "\033[1;36m"
-W = "\033[1;37m"
+W = "\033[0m" #reset the color
 BOLD = "\033[1m"
 
 def extract_archive(file_path, extract_to):
@@ -53,19 +53,39 @@ def extract_archive(file_path, extract_to):
 def package_install_and_check(*packs_list):
     for package_name in packs_list:
         print(f"{R}[{W}-{R}]{G}{BOLD} Installing package: {C}{package_name} {W}")
-        result = subprocess.run(["pkg", "install", package_name, "-y"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        if result.returncode != 0:
-            subprocess.run(["apt", "--fix-broken", "install", "-y", "--no-install-recommends"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            subprocess.run(["dpkg", "--configure", "-a"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        
-        if subprocess.run(["dpkg", "-s", package_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE).returncode == 0:
-            print(f"{R}[{W}-{R}]{G}{BOLD} {package_name} installed successfully {W}")
+
+        if shutil.which("pacman"):
+            # Use pacman to install the package
+            result = subprocess.run(["pacman", "-Sy", "--noconfirm", "--overwrite", "*", package_name], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            if result.returncode != 0:
+                subprocess.run(["pacman", "-Sy", "--noconfirm", package_name], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         else:
-            which_output = shutil.which(package_name)
-            if which_output:
-                print(f"{R}[{W}-{R}]{G} {package_name} installed successfully {W}")
+            # Use pkg to install the package
+            result = subprocess.run(["pkg", "install", package_name, "-y"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            if result.returncode != 0:
+                subprocess.run(["apt", "--fix-broken", "install", "-y", "--no-install-recommends"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                subprocess.run(["dpkg", "--configure", "-a"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        
+        if shutil.which("pacman"):
+            # Check if the package is installed using pacman
+            if subprocess.run(["pacman", "-Qi", package_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE).returncode == 0:
+                print(f"{R}[{W}-{R}]{G}{BOLD} {package_name} installed successfully {W}")
             else:
-                print(f"{R}[{W}-{R}]{G} {package_name} installation failed {W}")
+                which_output = shutil.which(package_name)
+                if which_output:
+                    print(f"{R}[{W}-{R}]{G} {package_name} installed successfully {W}")
+                else:
+                    print(f"{R}[{W}-{R}]{G} {package_name} installation failed {W}")
+        else:
+            # Check if the package is installed using dpkg
+            if subprocess.run(["dpkg", "-s", package_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE).returncode == 0:
+                print(f"{R}[{W}-{R}]{G}{BOLD} {package_name} installed successfully {W}")
+            else:
+                which_output = shutil.which(package_name)
+                if which_output:
+                    print(f"{R}[{W}-{R}]{G} {package_name} installed successfully {W}")
+                else:
+                    print(f"{R}[{W}-{R}]{G} {package_name} installation failed {W}")
                 
 def check_and_backup(file_paths):
 
@@ -86,11 +106,12 @@ def start_darkos():
     
 def termux_pkg():
     print(f"{R}[{W}-{R}]{G}{BOLD} This takes a few minutes it depends on your internet connection {W}")
-    package_install_and_check("glibc-repo", "x11-repo")
-    print(f"{R}[{W}-{R}]{G}{BOLD} glibc-repo + x11-repo installed {W}")
-    package_install_and_check("pulseaudio", "patchelf", "xkeyboard-config", "freetype", "fontconfig", "termux-x11-nightly", "termux-am zenity", "which", "alsa-lib-glibc", "bash", "curl", "sed", "cabextract")
+    if shutil.which("apt"):
+        package_install_and_check("glibc-repo", "x11-repo", "tur-repo")
+        print(f"{R}[{W}-{R}]{G}{BOLD} glibc-repo + x11-repo + tur-repo installed {W}")
+    package_install_and_check("pulseaudio", "xkeyboard-config", "freetype", "fontconfig", "termux-x11-nightly", "termux-am", "zenity", "which", "alsa-lib-glibc", "bash", "curl", "sed", "cabextract")
     print(f"{R}[{W}-{R}]{G}{BOLD}pulseaudio + termux-am +........... installed successfully {W}")
-    package_install_and_check("wget", "make", "libpng", "xorg-xrandr", "cmake", "unzip", "p7zip", "patchelf", "tur-repo", "tur-repo", "traceroute", "samba", "virglrenderer-android", "virglrenderer-mesa-zink", "zenity")
+    package_install_and_check("wget", "make", "libpng", "xorg-xrandr", "cmake", "unzip", "p7zip", "patchelf", "traceroute", "samba", "virglrenderer-android", "virglrenderer-mesa-zink", "zenity")
     print(f"{R}[{W}-{R}]{G}{BOLD} patchelf + wget + make +........ installed successfully {W}")
     print("")
 def install_glibc_AZ():
