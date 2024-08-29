@@ -106,13 +106,10 @@ def start_darkos():
     
 def termux_pkg():
     print(f"{R}[{W}-{R}]{G}{BOLD} This takes a few minutes it depends on your internet connection {W}")
-    if shutil.which("apt"):
-        package_install_and_check("glibc-repo", "x11-repo", "tur-repo")
-        print(f"{R}[{W}-{R}]{G}{BOLD} glibc-repo + x11-repo + tur-repo installed {W}")
-    package_install_and_check("pulseaudio", "xkeyboard-config", "freetype", "fontconfig", "termux-x11-nightly", "termux-am", "zenity", "which", "alsa-lib-glibc", "bash", "curl", "sed", "cabextract")
-    print(f"{R}[{W}-{R}]{G}{BOLD}pulseaudio + termux-am +........... installed successfully {W}")
-    package_install_and_check("wget", "make", "libpng", "xorg-xrandr", "cmake", "unzip", "p7zip", "patchelf", "traceroute", "samba", "virglrenderer-android", "virglrenderer-mesa-zink", "zenity")
-    print(f"{R}[{W}-{R}]{G}{BOLD} patchelf + wget + make +........ installed successfully {W}")
+    package_install_and_check("glibc-repo", "x11-repo")
+    print(f"{R}[{W}-{R}]{G}{BOLD} glibc-repo + x11-repo installed {W}")
+    package_install_and_check("pulseaudio", "patchelf", "xkeyboard-config", "freetype", "fontconfig", "termux-x11-nightly", "termux-am", "zenity", "which", "alsa-lib-glibc", "bash", "curl", "sed", "cabextract")
+    package_install_and_check("wget", "make", "libpng", "xorg-xrandr", "cmake", "unzip", "p7zip", "patchelf", "tur-repo", "tur-repo", "traceroute", "samba", "virglrenderer-android", "virglrenderer-mesa-zink", "zenity")
     print("")
 def install_glibc_AZ():
     os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/glibc-darkos.tar.xz")
