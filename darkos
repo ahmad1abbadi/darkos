@@ -15,46 +15,39 @@ pkill -9 pulseaudio
 if [[ "$key" == "1" ]]; then
     echo "${G}${BOLD} Safe MODE DARKOS.....STARTING"${W}
     termux-x11 :0 &>/dev/null &
-   # pulseaudio --start --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" --exit-idle-time=-1 &>/dev/null
-  
-   if [[ -f "/system/lib64/libskcodec.so" ]] ; then
-  LD_PRELOAD="/system/lib64/libskcodec.so" pulseaudio --start --exit-idle-time=-1 &
-  sleep 1
-  pacmd load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1 
+    # pulseaudio --start --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" --exit-idle-time=-1 &>/dev/null
 
-else
-   pulseaudio --start --exit-idle-time=-1 &
-   sleep 1
-   pacmd load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1
-fi
-
+    if [[ -f "/system/lib64/libskcodec.so" ]] ; then
+        LD_PRELOAD="/system/lib64/libskcodec.so" pulseaudio --start --exit-idle-time=-1 &
+        sleep 1
+        pacmd load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1 
+    else
+        pulseaudio --start --exit-idle-time=-1 &
+        sleep 1
+        pacmd load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1
+    fi
     python3 $PREFIX/bin/darkos.py $@
     exit 0
-elif [[ "$key" == " " ]]; then
-    echo "${G}${BOLD} Booting DARKOS 🖤 "${W}
 fi
 
 old_version="0.971"
-new_version=$(curl -s https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/currently%20version.txt)
 
 if ping -q -c 1 -W 1 google.com >/dev/null; then
     echo "${G}${BOLD} Welcome 🤗"${W}
-    if awk 'BEGIN{exit !('$old_version' < '$new_version')}'; then
-        echo ""
+	new_version=$(curl -s https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/currently%20version.txt)
+    if [ "$new_version" -gt "$old_version" ]; then
+        echo
         echo "${G}${BOLD} update available ⏫....to version : ${C}${BOLD}$new_version"${W}
         sleep 3
-else
+    else
         echo "${G}${BOLD} installed version : ${C}${BOLD}$old_version"${W}
         sleep 1
     fi
 else
     echo "${G}${BOLD} no internet connection 😔🛜"${W}
 fi
-
-if [[ -v LD_PRELOAD ]]; then
-    unset LD_PRELOAD
-fi
-echo ""
+unset LD_PRELOAD
+echo
 echo "${G}${BOLD} Booting DARKOS 🖤"${W}
 
 termux-x11 :0 &>/dev/null &
