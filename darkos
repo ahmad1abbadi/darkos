@@ -34,7 +34,7 @@ old_version="0.971"
 
 if ping -q -c 1 -W 1 google.com >/dev/null; then
     echo "${G}${BOLD} Welcome 🤗"${W}
-	new_version=$(curl -s https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/currently%20version.txt)
+	new_version=$(curl -connect-timeout 2 --max-time 2 -s https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/currently%20version.txt || echo 0)
     if [ "$new_version" -gt "$old_version" ]; then
         echo
         echo "${G}${BOLD} update available ⏫....to version : ${C}${BOLD}$new_version"${W}
