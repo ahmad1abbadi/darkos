@@ -7,7 +7,7 @@ to run [Wine](https://www.winehq.org/) on android.
 
 # Installation:
 1. Install
-[Termux](https://f-droid.org/repo/com.termux_118.apk),
+[Termux](https://github.com/termux/termux-app),
 [Termux-X11](https://github.com/ahmad1abbadi/extra/releases/download/apps/termux-x11.apk) and
 [Input Bridge v0.1.9.9](https://github.com/ahmad1abbadi/extra/releases/download/apps/InputBridge_v0.1.9.9.apk) or [Input Bridge v0.0.7](https://github.com/ahmad1abbadi/extra/releases/download/apps/input+bridge+0.0.7.apk)
 or 
