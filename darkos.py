@@ -258,7 +258,7 @@ def winetricks():
         print(f"{R}[{W}-{R}]{Y}{BOLD} winetricks working just wait its take 1 minute to launch menu {W}")
         print(f"{R}[{W}-{R}]{G}{BOLD} if you want to close it and back to main menu press control+C {W}")
         os.system("am start -n com.termux.x11/com.termux.x11.MainActivity &>/dev/null")
-        os.system("LD_PRELOAD= WINESERVER=$PREFIX/glibc/bin/wineserver WINE=$PREFIX/glibc/bin/wine64 $PREFIX/glibc/bin/box64 $PREFIX/glibc/bin/bash86 $PREFIX/glibc/bin/winetricks &>/dev/null")
+        os.system("LD_PRELOAD= WINESERVER=$PREFIX/glibc/bin/wineserver WINE=$PREFIX/glibc/bin/wine64 $PREFIX/glibc/bin/box64 $PREFIX/glibc/bin/box86 $PREFIX/glibc/bin/winetricks &>/dev/null")
         main_menu()
     elif choise == "2":
         exec(open(conf_path).read())
@@ -270,7 +270,7 @@ def winetricks():
         print("")
         print(f"{R}[{W}-{R}]{G}{BOLD} input verbs: {W}")
         winetrick_verbs = input()
-        os.system(f"LD_PRELOAD= WINESERVER=$PREFIX/glibc/bin/wineserver WINE=$PREFIX/glibc/bin/wine64 $PREFIX/glibc/bin/box64 $PREFIX/glibc/bin/bash86 $PREFIX/glibc/bin/winetricks {winetrick_verbs} ")
+        os.system(f"LD_PRELOAD= WINESERVER=$PREFIX/glibc/bin/wineserver WINE=$PREFIX/glibc/bin/wine64 $PREFIX/glibc/bin/box64 $PREFIX/glibc/bin/box86 $PREFIX/glibc/bin/winetricks {winetrick_verbs} ")
         print("")
         print(f"{R}[{W}-{R}]{G}{BOLD} winetrick packages installed successfully...👍 {W}")
         print(f"{R}[{W}-{R}]{G}{BOLD} backing to main menu..... 🔁 {W}")
