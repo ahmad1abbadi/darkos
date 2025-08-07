@@ -2,12 +2,31 @@ import psutil
 import time
 import gc
 from concurrent.futures import ThreadPoolExecutor
-from blessings import Terminal
 import concurrent.futures
 import os
 from threading import Lock
 import multiprocessing
 from multiprocessing import Process, Queue
+import json
+import pickle
+import logging
+
+# Optional imports with fallbacks
+try:
+    _blessings_mod = __import__('blessings')
+    Terminal = _blessings_mod.Terminal
+except Exception:
+    class Terminal:
+        def __init__(self): pass
+        def fullscreen(self): return self
+        def __enter__(self): return self
+        def __exit__(self, *args): pass
+        @property
+        def clear(self): return ""
+
+# Set up logging
+logging.basicConfig(level=logging.ERROR)
+logger = logging.getLogger(__name__)
 
 R = "\033[1;31m"
 G = "\033[1;32m"
@@ -19,6 +38,29 @@ BOLD = "\033[1m"
 
 # Initialize blessings terminal
 term = Terminal()
+
+# Global variables
+num_cores_to_assign = 4
+shared_memory = None
+
+# Additional required functions
+def read_file_async(file_path):
+    """Asynchronously read a file"""
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            return file.read()
+    except Exception as e:
+        logger.error(f"Error reading file {file_path}: {e}")
+        return ""
+
+def process_data(data):
+    """Process the data from file operations"""
+    try:
+        # Basic data processing - can be extended as needed
+        return data.strip() if isinstance(data, str) else str(data)
+    except Exception as e:
+        logger.error(f"Error processing data: {e}")
+        return ""
 
 def get_cpu_core_count():
     core_count = psutil.cpu_count(logical=False)
@@ -253,17 +295,39 @@ def cpu_memory():
                 if high_usage_process and high_usage_process.info['cpu_percent'] > 50:
                     optimize_memory_for_high_cpu_process(high_usage_process, recommended_memory_gb=5)
 
-                    # Check if the process has more than 10 files for I/O parallelization
+                    # Get process info for serialization
+                    pid = high_usage_process.info['pid']
+                    process_info = {
+                        'name': high_usage_process.info['name'],
+                        'cpu_percent': high_usage_process.info['cpu_percent']
+                    }
+                    serialized_process_info = pickle.dumps(process_info)
 
-                    shared_memory.set_value(0, pid.to_bytes(4, byteorder="big"))
-                    shared_memory.set_value(4, len(serialized_process_info).to_bytes(4, byteorder="big"))
-                    shared_memory.set_value(8, serialized_process_info)
+                    # Initialize shared memory if not already done
+                    if shared_memory is None:
+                        import multiprocessing
+                        shared_memory = multiprocessing.Array('B', 1024)  # 1KB shared memory
+
+                    # Check if the process has more than 10 files for I/O parallelization
+                    try:
+                        shared_memory[0:4] = pid.to_bytes(4, byteorder="big")
+                        shared_memory[4:8] = len(serialized_process_info).to_bytes(4, byteorder="big")
+                        shared_memory[8:8+len(serialized_process_info)] = serialized_process_info
+                    except Exception as e:
+                        logger.error(f"Error setting shared memory: {e}")
 
                     # Call io_operation with the result_queue and high_usage_process
-                    io_operation(shared_memory, high_usage_process, pid, result_queue)
+                    try:
+                        io_operation(shared_memory, high_usage_process, pid, result_queue)
+                    except Exception as e:
+                        logger.error(f"Error in io_operation: {e}")
 
                     # Retrieve the processed data from the result_queue
-                    processed_data = result_queue.get()
+                    try:
+                        processed_data = result_queue.get(timeout=1)  # Add timeout
+                    except Exception as e:
+                        logger.error(f"Error getting result from queue: {e}")
+                        processed_data = None
 
                     # Get file information for the high CPU process
                     file_info = get_file_descriptor_info(high_usage_process.info['pid'])

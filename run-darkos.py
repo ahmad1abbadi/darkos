@@ -6,7 +6,7 @@ import threading
 import shutil
 import sys, urllib.request, urllib.error
 
-
+# Color constants
 R = "\033[1;31m"
 G = "\033[1;32m"
 Y = "\033[1;33m"
@@ -15,7 +15,13 @@ C = "\033[1;36m"
 W = "\033[1;37m"
 BOLD = "\033[1m"
 
+# Global variables - will be loaded from config files
+container = "5"
+res = "1920x1080"
+wine_prefix = f"/data/data/com.termux/files/usr/glibc/opt/wine/{container}/.wine"
+
 def extract_and_delete_tar_files():
+    """Extract and delete tar files with error handling"""
     search_paths = [
         "/data/data/com.termux/files/usr/glibc/opt/temp/box",
         "/data/data/com.termux/files/usr/glibc/opt/wine/5",
@@ -23,23 +29,60 @@ def extract_and_delete_tar_files():
         "/data/data/com.termux/files/usr/glibc/opt/wine/2",
         "/data/data/com.termux/files/usr/glibc/opt/wine/3"
     ]
+    
     for path in search_paths:
-        for filename in os.listdir(path):
-            if filename.endswith(".tar"):
-                tar_file = os.path.join(path, filename)
-                if os.path.exists(os.path.join(path, ".wine")):
-                    shutil.rmtree(os.path.join(path, ".wine"))
-                if os.path.exists(os.path.join(path, "wine")):
-                    shutil.rmtree(os.path.join(path, "wine"))
-                subprocess.run(["tar", "-xf", tar_file, "-C", path])
-                os.remove(tar_file)
-                if os.path.exists(os.path.join(path, "box64")):
-                    destination_path = "/data/data/com.termux/files/usr/glibc/bin/box64"
-                    if os.path.exists(destination_path):
-                        os.remove(destination_path)
-                    shutil.move(os.path.join(path, "box64"), destination_path)
-                    time.sleep(1)
+        try:
+            if not os.path.exists(path):
+                continue
+                
+            for filename in os.listdir(path):
+                if filename.endswith(".tar"):
+                    tar_file = os.path.join(path, filename)
+                    
+                    # Remove existing directories
+                    wine_path = os.path.join(path, ".wine")
+                    wine_dir = os.path.join(path, "wine")
+                    
+                    if os.path.exists(wine_path):
+                        shutil.rmtree(wine_path)
+                    if os.path.exists(wine_dir):
+                        shutil.rmtree(wine_dir)
+                    
+                    # Extract tar file
+                    try:
+                        subprocess.run(["tar", "-xf", tar_file, "-C", path], check=True)
+                        os.remove(tar_file)
+                    except subprocess.CalledProcessError as e:
+                        print(f"Error extracting {tar_file}: {e}")
+                        continue
+                    except Exception as e:
+                        print(f"Error removing {tar_file}: {e}")
+                        continue
+                    
+                    # Move box64 if it exists
+                    box64_src = os.path.join(path, "box64")
+                    box64_dest = "/data/data/com.termux/files/usr/glibc/bin/box64"
+                    
+                    if os.path.exists(box64_src):
+                        try:
+                            if os.path.exists(box64_dest):
+                                os.remove(box64_dest)
+                            shutil.move(box64_src, box64_dest)
+                            time.sleep(1)
+                        except Exception as e:
+                            print(f"Error moving box64: {e}")
+                            
+        except Exception as e:
+            print(f"Error processing path {path}: {e}")
+
 def load_conf():
+    """Load configuration files with error handling"""
+    # Initialize default values
+    global container, wine_prefix, res
+    container = "5"  # Default container
+    res = "1920x1080"  # Default resolution  
+    wine_prefix = f"/data/data/com.termux/files/usr/glibc/opt/wine/{container}/.wine"
+    
     conf_paths = [
         "/data/data/com.termux/files/usr/glibc/opt/wine/os.conf",
         "/data/data/com.termux/files/usr/glibc/opt/darkos/res.conf",
@@ -49,10 +92,25 @@ def load_conf():
         "/sdcard/darkos/darkos_custom.conf",
         "/data/data/com.termux/files/usr/glibc/opt/scripts/hud-settings.conf"
     ]
+    
     for conf_path in conf_paths:
-        exec(open(conf_path).read(), globals())
-    os.system("chmod +x $PREFIX/glibc/bin/box86")
-    os.system("chmod +x $PREFIX/glibc/bin/box64")
+        try:
+            if os.path.exists(conf_path):
+                exec(open(conf_path).read(), globals())
+            else:
+                print(f"Warning: Configuration file not found: {conf_path}")
+        except Exception as e:
+            print(f"Error loading config {conf_path}: {e}")
+    
+    # Update wine_prefix after loading configs
+    wine_prefix = f"/data/data/com.termux/files/usr/glibc/opt/wine/{container}/.wine"
+    
+    # Set executable permissions
+    try:
+        os.system("chmod +x $PREFIX/glibc/bin/box86")
+        os.system("chmod +x $PREFIX/glibc/bin/box64")
+    except Exception as e:
+        print(f"Error setting permissions: {e}")
 def create_wine_prefix():
     if not os.path.exists(f"/data/data/com.termux/files/usr/glibc/opt/wine/{container}/wine/bin/wine64"):
         os.system(f"ln -sf /data/data/com.termux/files/usr/glibc/opt/wine/{container}/wine/bin/wine $PREFIX/glibc/bin/wine64")

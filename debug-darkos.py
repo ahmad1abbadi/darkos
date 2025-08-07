@@ -3,6 +3,7 @@ import re
 import subprocess
 import time
 import threading
+import shutil
 
 R = "\033[1;31m"
 G = "\033[1;32m"
@@ -12,10 +13,33 @@ C = "\033[1;36m"
 W = "\033[1;37m"
 BOLD = "\033[1m"
 
-exec(open('/data/data/com.termux/files/usr/glibc/opt/wine/os.conf').read())
-exec(open('/sdcard/darkos/darkos_dynarec.conf').read())
-exec(open('/sdcard/darkos/darkos_dynarec_box86.conf').read())
-exec(open('/sdcard/darkos/darkos_custom.conf').read())
+try:
+    exec(open('/data/data/com.termux/files/usr/glibc/opt/wine/os.conf').read())
+except FileNotFoundError:
+    print(f"{Y}Warning: Wine configuration file not found, using defaults{W}")
+except Exception as e:
+    print(f"{R}Error loading wine config: {e}{W}")
+
+try:
+    exec(open('/sdcard/darkos/darkos_dynarec.conf').read())
+except FileNotFoundError:
+    print(f"{Y}Warning: Dynarec configuration file not found, using defaults{W}")
+except Exception as e:
+    print(f"{R}Error loading dynarec config: {e}{W}")
+
+try:
+    exec(open('/sdcard/darkos/darkos_dynarec_box86.conf').read())
+except FileNotFoundError:
+    print(f"{Y}Warning: Box86 configuration file not found, using defaults{W}")
+except Exception as e:
+    print(f"{R}Error loading box86 config: {e}{W}")
+
+try:
+    exec(open('/sdcard/darkos/darkos_custom.conf').read())
+except FileNotFoundError:
+    print(f"{Y}Warning: Custom configuration file not found, using defaults{W}")
+except Exception as e:
+    print(f"{R}Error loading custom config: {e}{W}")
 os.environ["BOX64_TRACE_FILE"]="/sdcard/darkos/trace/trace-%pid.txt"
 os.system("BOX64_LOG=1 BOX64_SHOWSEGV=1 BOX64_DYNAREC_LOG=1 BOX64_DYNAREC_MISSING=1 WINEDEBUG=warn+all BOX64_DLSYM_ERROR=1 WINEDEBUG=+err taskset -c 4-7 box64 wine64 explorer /desktop=shell,800x600 $PREFIX/glibc/opt/apps/DARKOS_configuration.exe >/sdcard/darkos/darkos.log 2>&1 &")
 os.system("am start -n com.termux.x11/com.termux.x11.MainActivity &>/dev/null")
@@ -71,7 +95,7 @@ def recreate_prefix():
       os.system(f"ln -sf /data/data/com.termux/files/usr/glibc/opt/wine/{prefix_path}/wine/bin/wine64 $PREFIX/glibc/bin/wine64")
       os.system(f"ln -sf /data/data/com.termux/files/usr/glibc/opt/wine/{prefix_path}/wine/bin/wineserver $PREFIX/glibc/bin/wineserver")
       os.system(f"ln -sf /data/data/com.termux/files/usr/glibc/opt/wine/{prefix_path}/wine/bin/wineboot $PREFIX/glibc/bin/wineboot")
-      os.system(f"ln -sf /data/data/com.termux/files/us/glibc/opt/wine/{prefix_path}/wine/bin/winecfg $PREFIX/glibc/bin/winecfg")
+      os.system(f"ln -sf /data/data/com.termux/files/usr/glibc/opt/wine/{prefix_path}/wine/bin/winecfg $PREFIX/glibc/bin/winecfg")
       os.environ.pop('LD_PRELOAD', None)
       def prefix_gstreamer():
         print(f"{R}[{W}-{R}]{G}{BOLD} Creating wine prefix 💫 {W}")
@@ -103,7 +127,7 @@ def recreate_prefix():
         user_input = colored_input("Enter 1 to stop: ")
         if user_input == "1":
           os.system("box64 wineserver -k")
-          print(f"{G} Exiting 👋 {w}")
+          print(f"{G} Exiting 👋 {W}")
           os.system('pkill -f "app_process / com.termux.x11"')
           os.system('pkill -f pulseaudio')
           reboot()
