@@ -4,7 +4,15 @@ import socket
 import fnmatch
 import zipfile
 import tarfile
-from tqdm import tqdm
+# Optional progress bar support; fallback if tqdm is unavailable
+try:
+    from tqdm import tqdm
+except ImportError:
+    class tqdm:
+        def __init__(self, *args, **kwargs): pass
+        def update(self, n): pass
+        def __enter__(self): return self
+        def __exit__(self, exc_type, exc, tb): return False
 
 R = "\033[1;31m"
 G = "\033[1;32m"

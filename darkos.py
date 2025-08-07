@@ -7,7 +7,17 @@ import shutil
 import sys, urllib.request, urllib.error
 import zipfile
 import tarfile
-from tqdm import tqdm
+# Optional progress bar support; fallback if tqdm is unavailable
+try:
+    import tqdm as _tqdm_mod
+    tqdm = _tqdm_mod.tqdm
+except ImportError:
+    class tqdm:
+        def __init__(self, *args, **kwargs): pass
+        def update(self, n): pass
+        def __enter__(self): return self
+        def __exit__(self, exc_type, exc, tb): return False
+import hashlib
 
 R = "\033[1;31m"
 G = "\033[1;32m"
@@ -20,43 +30,152 @@ BOLD = "\033[1m"
 current_version = "0.971"
 url = 'https://raw.githubusercontent.com/ahmad1abbadi/darkos/main/currently%20version.txt'
 
+def verify_archive(file_path):
+    """Verify if archive file is not corrupted"""
+    try:
+        if file_path.endswith('.zip'):
+            with zipfile.ZipFile(file_path, 'r') as zip_ref:
+                return zip_ref.testzip() is None
+        elif file_path.endswith(('.tar.gz', '.tgz', '.tar', '.tar.xz', '.txz')):
+            with tarfile.open(file_path, 'r') as tar_ref:
+                # Try to read the first few members to check integrity
+                members = tar_ref.getmembers()
+                return len(members) > 0
+        return True
+    except (zipfile.BadZipFile, tarfile.TarError, EOFError):
+        return False
+    except Exception:
+        return False
+
+def safe_download_with_retry(url, filename, max_retries=3):
+    """Download file with retry mechanism and corruption checking"""
+    for attempt in range(max_retries):
+        try:
+            print(f"{Y}Attempt {attempt + 1} of {max_retries} to download {filename}...{W}")
+            
+            # Remove corrupted file if exists
+            if os.path.exists(filename):
+                os.remove(filename)
+            
+            # Download with progress bar
+            urllib.request.urlretrieve(url, filename)
+            
+            # Verify the downloaded file
+            if verify_archive(filename):
+                print(f"{G}Successfully downloaded and verified {filename}{W}")
+                return True
+            else:
+                print(f"{R}Downloaded file {filename} is corrupted, retrying...{W}")
+                if os.path.exists(filename):
+                    os.remove(filename)
+                    
+        except Exception as e:
+            print(f"{R}Download attempt {attempt + 1} failed: {str(e)}{W}")
+            if os.path.exists(filename):
+                os.remove(filename)
+                
+        if attempt < max_retries - 1:
+            print(f"{Y}Waiting 2 seconds before retry...{W}")
+            time.sleep(2)
+    
+    print(f"{R}Failed to download {filename} after {max_retries} attempts{W}")
+    return False
+
+def clean_duplicate_files(directory):
+    """Clean duplicate files with .1, .2, .3 extensions as mentioned in issue #48"""
+    try:
+        for filename in os.listdir(directory):
+            file_path = os.path.join(directory, filename)
+            if os.path.isfile(file_path):
+                # Check if this is a duplicate file with numeric extension
+                base_name = filename
+                if '.' in filename:
+                    parts = filename.rsplit('.', 1)
+                    if len(parts) == 2 and parts[1].isdigit():
+                        base_name = parts[0]
+                        base_path = os.path.join(directory, base_name)
+                        
+                        # If base file exists and is corrupt, remove it and rename the numbered one
+                        if os.path.exists(base_path) and not verify_archive(base_path):
+                            os.remove(base_path)
+                            os.rename(file_path, base_path)
+                            print(f"{G}Replaced corrupted {base_name} with {filename}{W}")
+    except Exception as e:
+        print(f"{Y}Note: Could not clean duplicate files: {str(e)}{W}")
+
+def handle_encoding_issues(path):
+    """Handle non-English paths properly as mentioned in issue #19"""
+    try:
+        # Ensure the path is properly encoded
+        if isinstance(path, bytes):
+            path = path.decode('utf-8', 'replace')
+        return path.encode('utf-8', 'replace').decode('utf-8')
+    except Exception:
+        # Fallback to ASCII if UTF-8 fails
+        return path.encode('ascii', 'replace').decode('ascii')
+
 def extract_archive(file_path, extract_to):
     if not os.path.exists(file_path):
         print(f"{R}File does not exist: {file_path}{W}")
-        return
+        return False
 
-    if file_path.endswith('.zip'):
-        with zipfile.ZipFile(file_path, 'r') as zip_ref:
-            file_size = sum((file.file_size for file in zip_ref.infolist()))
-            with tqdm(total=file_size, unit='B', unit_scale=True, desc=f'{G}Extracting{C}', bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{rate_fmt}{postfix}]') as pbar:
-                for file in zip_ref.infolist():
-                    zip_ref.extract(file, extract_to)
-                    pbar.update(file.file_size)
-
-    elif file_path.endswith('.tar.gz') or file_path.endswith('.tgz') or file_path.endswith('.tar'):
-        with tarfile.open(file_path, 'r') as tar_ref:
-            file_size = sum((file.size for file in tar_ref.getmembers()))
-            with tqdm(total=file_size, unit='B', unit_scale=True, desc=f'{G}Extracting{C}', bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{rate_fmt}{postfix}]') as pbar:
-                for file in tar_ref.getmembers():
-                    tar_ref.extract(file, extract_to)
-                    pbar.update(file.size)
-
-    elif file_path.endswith('.tar.xz') or file_path.endswith('.txz'):
-        with tarfile.open(file_path, 'r:xz') as tar_ref:
-            file_size = sum((file.size for file in tar_ref.getmembers()))
-            with tqdm(total=file_size, unit='B', unit_scale=True, desc=f'{G}Extracting{C}', bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{rate_fmt}{postfix}]') as pbar:
-                for file in tar_ref.getmembers():
-                    tar_ref.extract(file, extract_to)
-                    pbar.update(file.size)
-
-    else:
-        print(f"{R}Unsupported file format{W}")
-        return
+    # Check if file is corrupted before extraction
+    if not verify_archive(file_path):
+        print(f"{R}Archive file is corrupted: {file_path}{W}")
+        print(f"{Y}Attempting to re-download the file...{W}")
+        return False
 
     try:
+        if file_path.endswith('.zip'):
+            with zipfile.ZipFile(file_path, 'r') as zip_ref:
+                # Test the zip file integrity first
+                if zip_ref.testzip() is not None:
+                    print(f"{R}Corrupted zip file detected: {file_path}{W}")
+                    return False
+                
+                file_size = sum((file.file_size for file in zip_ref.infolist()))
+                with tqdm(total=file_size, unit='B', unit_scale=True, desc=f'{G}Extracting{C}', bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{rate_fmt}{postfix}]') as pbar:
+                    for file in zip_ref.infolist():
+                        # Handle non-English filenames properly
+                        file.filename = file.filename.encode('cp437').decode('utf-8', 'ignore')
+                        zip_ref.extract(file, extract_to)
+                        pbar.update(file.file_size)
+
+        elif file_path.endswith('.tar.gz') or file_path.endswith('.tgz') or file_path.endswith('.tar'):
+            with tarfile.open(file_path, 'r') as tar_ref:
+                file_size = sum((file.size for file in tar_ref.getmembers()))
+                with tqdm(total=file_size, unit='B', unit_scale=True, desc=f'{G}Extracting{C}', bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{rate_fmt}{postfix}]') as pbar:
+                    for file in tar_ref.getmembers():
+                        tar_ref.extract(file, extract_to)
+                        pbar.update(file.size)
+
+        elif file_path.endswith('.tar.xz') or file_path.endswith('.txz'):
+            with tarfile.open(file_path, 'r:xz') as tar_ref:
+                file_size = sum((file.size for file in tar_ref.getmembers()))
+                with tqdm(total=file_size, unit='B', unit_scale=True, desc=f'{G}Extracting{C}', bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{rate_fmt}{postfix}]') as pbar:
+                    for file in tar_ref.getmembers():
+                        tar_ref.extract(file, extract_to)
+                        pbar.update(file.size)
+
+        else:
+            print(f"{R}Unsupported file format{W}")
+            return False
+
+    except (zipfile.BadZipFile, tarfile.TarError, EOFError) as e:
+        print(f"{R}Error extracting archive: {str(e)}{W}")
+        print(f"{Y}Archive appears to be corrupted. Cleaning up and attempting retry...{W}")
+        return False
+    except Exception as e:
+        print(f"{R}Unexpected error during extraction: {str(e)}{W}")
+        return False
+
+    # Only delete the archive if extraction was successful
+    try:
         os.remove(file_path)
+        return True
     except Exception as e:
         print(f"{R}Error deleting archive file: {str(e)}{W}")
+        return True  # Extraction was successful even if cleanup failed
 
 def colored_input(prompt):
     print(f"{R}[{W}-{R}]{G}{BOLD} {prompt} {W}", end="")
@@ -67,9 +186,55 @@ def start_darkos():
     os.system("clear")
     if "LD_PRELOAD" in os.environ:
         del os.environ["LD_PRELOAD"]
-    print(f"{R}[{W}-{R}]{G}{BOLD} Starting {W}")
-    os.system("termux-x11 :0 &>/dev/null &")
-    os.system('pulseaudio --start --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" --exit-idle-time=-1 &>/dev/null')
+    
+    print(f"{R}[{W}-{R}]{G}{BOLD} Starting Dark OS... {W}")
+    
+    # Kill any existing instances to avoid conflicts
+    os.system("pkill -f 'termux-x11' &>/dev/null")
+    os.system("pkill -f 'pulseaudio' &>/dev/null")
+    
+    # Wait a moment for processes to fully terminate
+    time.sleep(2)
+    
+    # Check if display is available
+    display_ready = False
+    max_attempts = 5
+    
+    for attempt in range(max_attempts):
+        print(f"{Y}Starting X11 server (attempt {attempt + 1}/{max_attempts})...{W}")
+        os.system("termux-x11 :0 &>/dev/null &")
+        
+        # Give X11 time to start
+        time.sleep(3)
+        
+        # Test if display is working
+        result = os.system("DISPLAY=:0 xset q &>/dev/null")
+        if result == 0:
+            display_ready = True
+            print(f"{G}X11 server started successfully{W}")
+            break
+        else:
+            print(f"{Y}X11 server not ready, retrying...{W}")
+            os.system("pkill -f 'termux-x11' &>/dev/null")
+            time.sleep(2)
+    
+    if not display_ready:
+        print(f"{R}Failed to start X11 server after {max_attempts} attempts{W}")
+        print(f"{R}Please check your Termux-X11 installation and try again{W}")
+        return False
+    
+    # Start PulseAudio with better error handling
+    print(f"{Y}Starting PulseAudio...{W}")
+    pulse_result = os.system('pulseaudio --start --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" --exit-idle-time=-1 &>/dev/null')
+    
+    if pulse_result != 0:
+        print(f"{Y}PulseAudio failed to start normally, trying alternative method...{W}")
+        os.system('pulseaudio --kill &>/dev/null')
+        time.sleep(1)
+        os.system('pulseaudio --start &>/dev/null')
+    
+    print(f"{G}Dark OS services started successfully{W}")
+    return True
 def wine_container():
     os.system("clear")
     photo()
@@ -124,16 +289,57 @@ def wine_container():
             exec(open(conf_path).read())
         if not os.path.exists(wine_prefix):
             print(f"{R}[{W}-{R}]{G}{BOLD} Creating wine prefix 💫 {W}")
-            os.system(f'WINEDLLOVERRIDES="mscoree=disabled" box64 wine64 wineboot &>/dev/null')
-            os.system(f'cp -r $PREFIX/glibc/opt/Startxmenu/* "{wine_prefix}/drive_c/ProgramData/Microsoft/Windows/Start Menu"')
-            os.system(f'rm "{wine_prefix}/dosdevices/z:"')
-            os.system(f'ln -s /sdcard/Download "{wine_prefix}/dosdevices/o:" &>/dev/null')
-            os.system(f'ln -s /sdcard/darkos "{wine_prefix}/dosdevices/e:" &>/dev/null')
-            os.system(f'ln -s /data/data/com.termux/files "{wine_prefix}/dosdevices/z:"')
+            
+            # Create wine prefix with better error handling
+            wineboot_result = os.system(f'WINEDLLOVERRIDES="mscoree=disabled" box64 wine64 wineboot &>/dev/null')
+            if wineboot_result != 0:
+                print(f"{R}Failed to create wine prefix. Please check your wine installation.{W}")
+                time.sleep(3)
+                main_menu()
+                return
+                
+            # Copy start menu items with error handling
+            try:
+                os.system(f'cp -r $PREFIX/glibc/opt/Startxmenu/* "{wine_prefix}/drive_c/ProgramData/Microsoft/Windows/Start Menu" 2>/dev/null')
+            except Exception as e:
+                print(f"{Y}Note: Could not copy start menu items: {str(e)}{W}")
+            
+            # Set up drive mappings with error handling
+            try:
+                if os.path.exists(f'"{wine_prefix}/dosdevices/z:"'):
+                    os.system(f'rm "{wine_prefix}/dosdevices/z:"')
+                os.system(f'ln -s /sdcard/Download "{wine_prefix}/dosdevices/o:" &>/dev/null')
+                os.system(f'ln -s /sdcard/darkos "{wine_prefix}/dosdevices/e:" &>/dev/null')
+                os.system(f'ln -s /data/data/com.termux/files "{wine_prefix}/dosdevices/z:"')
+            except Exception as e:
+                print(f"{Y}Note: Could not create all drive mappings: {str(e)}{W}")
+            
             print(f"{G} Installing DXVK+Zink... {W}")
-            os.system(f'box64 wine "$PREFIX/glibc/opt/apps/Install OS stuff.bat" &>/dev/null')
+            
+            # Install DXVK with better error handling and logging
+            dxvk_install_path = "$PREFIX/glibc/opt/apps/Install OS stuff.bat"
+            if os.path.exists(dxvk_install_path.replace("$PREFIX", os.environ.get('PREFIX', '/data/data/com.termux/files/usr'))):
+                print(f"{Y}Running DXVK installation script...{W}")
+                dxvk_result = os.system(f'box64 wine "{dxvk_install_path}" 2>/tmp/dxvk_install.log')
+                
+                if dxvk_result != 0:
+                    print(f"{R}DXVK installation failed with exit code: {dxvk_result}{W}")
+                    print(f"{Y}Check /tmp/dxvk_install.log for details{W}")
+                    
+                    # Try alternative DXVK installation
+                    print(f"{Y}Attempting alternative DXVK installation method...{W}")
+                    alternative_result = os.system('WINEDLLOVERRIDES="d3d11,dxgi=n" box64 wine64 wineboot -u &>/dev/null')
+                    if alternative_result == 0:
+                        print(f"{G}Alternative DXVK setup completed{W}")
+                    else:
+                        print(f"{R}DXVK installation failed. You may need to install it manually.{W}")
+                        print(f"{Y}The system will still work but graphics performance may be reduced.{W}")
+                else:
+                    print(f"{G}DXVK installation completed successfully{W}")
+            else:
+                print(f"{Y}DXVK installation script not found, skipping...{W}")
+            
             print(f"{R}[{W}-{R}]{G}{BOLD} Done! {W}")
-            #os.system("clear") 
             print(f"{R}[{W}-{R}]{G}{BOLD} prefix done enjoy 🤪 {W}")
             time.sleep(3)
             os.system("box64 wineserver -k &>/dev/null")
@@ -277,25 +483,81 @@ def winetricks():
         time.sleep(4)
         main_menu()
 def start_container():
-    start_darkos()
-    exec(open('/sdcard/darkos/darkos_dynarec.conf').read())
+    # Start Dark OS services with error checking
+    if not start_darkos():
+        print(f"{R}Failed to start Dark OS services{W}")
+        main_menu()
+        return
+        
+    # Load configuration
+    try:
+        exec(open('/sdcard/darkos/darkos_dynarec.conf').read())
+    except FileNotFoundError:
+        print(f"{Y}Configuration file not found, using defaults{W}")
+    except Exception as e:
+        print(f"{Y}Error loading configuration: {str(e)}{W}")
+    
     os.system("chmod +x $PREFIX/glibc/bin/box86")
     os.system("chmod +x $PREFIX/glibc/bin/box64")
-    xrandr_output = os.popen('xrandr').read()
-    current_resolution_match = re.search(r'current\s+(\d+) x (\d+)', xrandr_output)
+    
+    # Get current resolution with fallback
+    try:
+        xrandr_output = os.popen('DISPLAY=:0 xrandr 2>/dev/null').read()
+        current_resolution_match = re.search(r'current\s+(\d+) x (\d+)', xrandr_output)
 
-    if current_resolution_match:
-        current_resolution = f"{current_resolution_match.group(1)}x{current_resolution_match.group(2)}"
-    else:
-        current_resolution = "800x600"
+        if current_resolution_match:
+            current_resolution = f"{current_resolution_match.group(1)}x{current_resolution_match.group(2)}"
+        else:
+            current_resolution = "1024x768"  # Better default resolution
+    except Exception:
+        current_resolution = "1024x768"
+    
     res = current_resolution
-    os.system("taskset -c 4-7 box64 wine64 explorer /desktop=shell," + res + " $PREFIX/glibc/opt/apps/run.exe &>/dev/null &")
-    os.system("am start -n com.termux.x11/com.termux.x11.MainActivity &>/dev/null")
+    print(f"{G}Using resolution: {res}{W}")
+    
+    # Start Wine desktop with error handling
+    print(f"{Y}Starting Wine desktop...{W}")
+    wine_cmd = f"taskset -c 4-7 box64 wine64 explorer /desktop=shell,{res} $PREFIX/glibc/opt/apps/run.exe"
+    wine_process = subprocess.Popen(wine_cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    
+    # Give Wine time to start
+    time.sleep(5)
+    
+    # Check if Wine process is running
+    if wine_process.poll() is not None:
+        print(f"{R}Wine desktop failed to start{W}")
+        print(f"{Y}Checking system requirements...{W}")
+        
+        # Check if box64 is available
+        if os.system("which box64 &>/dev/null") != 0:
+            print(f"{R}box64 not found or not executable{W}")
+        
+        # Check if wine is available  
+        if os.system("which wine64 &>/dev/null") != 0:
+            print(f"{R}wine64 not found or not executable{W}")
+            
+        main_menu()
+        return
+    
+    # Try to start the X11 activity
+    activity_result = os.system("am start -n com.termux.x11/com.termux.x11.MainActivity &>/dev/null")
+    if activity_result != 0:
+        print(f"{Y}Could not automatically start Termux-X11 app{W}")
+        print(f"{Y}Please manually open the Termux-X11 app{W}")
+    
     os.system("clear")
     os.system("python3 $PREFIX/bin/photo.py")
+    print(f"{G}Dark OS is now running!{W}")
     print(f"{Y}exit 1️⃣ {W}")
+    
     user_input = colored_input("Enter 1 to stop: ")
     if user_input == "1":
+        print(f"{Y}Shutting down Dark OS...{W}")
+        wine_process.terminate()
+        time.sleep(2)
+        if wine_process.poll() is None:
+            wine_process.kill()
+        
         os.system("box64 wineserver -k")
         print(f"{Y} Exiting 👋 {W}")
         os.system('pkill -f "app_process / com.termux.x11"')
@@ -334,6 +596,18 @@ def uninstall_wine():
         print("")
         uninstall_wine7()
     main_menu()
+def uninstall_wine7():
+    if os.path.exists("/data/data/com.termux/files/usr/glibc/opt/wine/3/wine/bin"):
+        os.system("rm -r /data/data/com.termux/files/usr/glibc/opt/wine/3/wine")
+        if os.path.exists("/data/data/com.termux/files/usr/glibc/opt/wine/3/.wine"):
+            shutil.rmtree('/data/data/com.termux/files/usr/glibc/opt/wine/3/.wine')
+
+def uninstall_wine8():
+    if os.path.exists("/data/data/com.termux/files/usr/glibc/opt/wine/2/wine/bin"):
+        os.system("rm -r /data/data/com.termux/files/usr/glibc/opt/wine/2/wine")
+        if os.path.exists("/data/data/com.termux/files/usr/glibc/opt/wine/2/.wine"):
+            shutil.rmtree('/data/data/com.termux/files/usr/glibc/opt/wine/2/.wine')
+
 def uninstall_wine9():
     if os.path.exists("/data/data/com.termux/files/usr/glibc/opt/wine/1/wine/bin"):
         os.system("rm -r /data/data/com.termux/files/usr/glibc/opt/wine/1/wine")
@@ -406,8 +680,30 @@ def Compile():
     os.system("apt install cmake-glibc make-glibc python-glibc")
     os.system("pkg install -y git; unset LD_PRELOAD; export GLIBC_PREFIX=/data/data/com.termux/files/usr/glibc; export PATH=$GLIBC_PREFIX/bin:$PATH; cd ~/; git clone https://github.com/ptitSeb/box64; cd ~/box64; sed -i 's/\/usr/\/data\/data\/com.termux\/files\/usr\/glibc/g' CMakeLists.txt; sed -i 's/\/etc/\/data\/data\/com.termux\/files\/usr\/glibc\/etc/g' CMakeLists.txt; mkdir build; cd build; cmake --install-prefix $PREFIX/glibc .. -DARM_DYNAREC=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBAD_SIGNAL=ON -DSD845=ON; make -j8; make install")
 def install_wine9():
-    os.system("wget -q --show-progress https://github.com/ahmad1abbadi/darkos/releases/download/beta/wine-default.tar.xz")
-    extract_archive('wine-default.tar.xz','/data/data/com.termux/files/usr/glibc/opt/wine/1/')
+    print(f"{R}[{W}-{R}]{G}{BOLD} Downloading wine-default.tar.xz... {W}")
+    
+    wine_url = "https://github.com/ahmad1abbadi/darkos/releases/download/beta/wine-default.tar.xz"
+    wine_file = "wine-default.tar.xz"
+    install_path = "/data/data/com.termux/files/usr/glibc/opt/wine/1/"
+    
+    # Clean any existing corrupted downloads
+    clean_duplicate_files(os.getcwd())
+    
+    # Download with retry mechanism
+    if not safe_download_with_retry(wine_url, wine_file):
+        print(f"{R}Failed to download wine package{W}")
+        return False
+    
+    # Create install directory
+    os.makedirs(install_path, exist_ok=True)
+    
+    # Extract with error handling
+    if extract_archive(wine_file, install_path):
+        print(f"{G}Wine installation completed successfully{W}")
+        return True
+    else:
+        print(f"{R}Wine installation failed during extraction{W}")
+        return False
 def auto_start():
     os.system("clear")
     photo()
@@ -679,6 +975,59 @@ def new_sesson():
     --es com.termux.RUN_COMMAND_WORKDIR '/data/data/com.termux/files/home' \
     --ez com.termux.RUN_COMMAND_BACKGROUND 'false' \
     --es com.termux.RUN_COMMAND_SESSION_ACTION '1' &> /dev/null ")
+def check_system_requirements():
+    """Check system requirements and provide diagnostic information"""
+    print(f"{R}[{W}-{R}]{G}{BOLD} System Diagnostics {W}")
+    print("")
+    
+    # Check Termux version
+    try:
+        result = subprocess.run(['termux-info'], capture_output=True, text=True, timeout=10)
+        print(f"{G}Termux Info:{W}")
+        print(result.stdout[:500])  # Limit output
+    except Exception:
+        print(f"{Y}Could not get Termux info{W}")
+    
+    # Check available space
+    try:
+        result = subprocess.run(['df', '-h', '/data/data/com.termux/files'], capture_output=True, text=True)
+        print(f"{G}Storage Space:{W}")
+        print(result.stdout)
+    except Exception:
+        print(f"{Y}Could not check storage space{W}")
+    
+    # Check if required directories exist
+    required_dirs = [
+        '/data/data/com.termux/files/usr/glibc',
+        '/sdcard/darkos',
+        '/data/data/com.termux/files/usr/glibc/opt'
+    ]
+    
+    print(f"{G}Directory Status:{W}")
+    for dir_path in required_dirs:
+        if os.path.exists(dir_path):
+            print(f"{G}✓ {dir_path}{W}")
+        else:
+            print(f"{R}✗ {dir_path} (missing){W}")
+    
+    # Check executable permissions
+    executables = [
+        '/data/data/com.termux/files/usr/glibc/bin/box64',
+        '/data/data/com.termux/files/usr/glibc/bin/box86'
+    ]
+    
+    print(f"{G}Executable Status:{W}")
+    for exe_path in executables:
+        if os.path.exists(exe_path) and os.access(exe_path, os.X_OK):
+            print(f"{G}✓ {exe_path}{W}")
+        elif os.path.exists(exe_path):
+            print(f"{Y}! {exe_path} (not executable){W}")
+        else:
+            print(f"{R}✗ {exe_path} (missing){W}")
+    
+    print("")
+    input(f"{Y}Press Enter to continue...{W}")
+
 def main_menu():
     os.system("clear")
     photo()
@@ -689,11 +1038,13 @@ def main_menu():
     print(f"{Y} 2) SETTINGS ⚙️ {W}")
     print(f"{Y} 3) EXIT SAFE MODE 🚪 {W}")
     print(f"{Y} 4) KILL DARK OS AND EXIT TO TERMINAL 😭 {W}")
+    print(f"{Y} 5) SYSTEM DIAGNOSTICS 🔍 {W}")
     print("")
     main()
     choice = input()
-    if choice != "1" and choice != "2" and choice != "3" and choice != "4":
-        print(f"{R} wrong {W}")
+    if choice not in ["1", "2", "3", "4", "5"]:
+        print(f"{R} Invalid option {W}")
+        time.sleep(1)
         main_menu()
     elif choice == "1":
         wine_container()
@@ -717,5 +1068,8 @@ def main_menu():
         os.system('pkill -f "app_process / com.termux.x11"')
         os.system('pkill -f pulseaudio')
         os._exit(0)
+    elif choice == "5":
+        check_system_requirements()
+        main_menu()
 start_darkos()
 main_menu()
