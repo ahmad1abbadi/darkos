@@ -8,7 +8,8 @@ This document describes the fixes implemented for common Dark OS issues found in
 
 **Problem**: Archive files get corrupted during download, causing extraction to fail.
 
-**Fix**: 
+**Fix**:
+
 - Added `verify_archive()` function to check file integrity before extraction
 - Implemented `safe_download_with_retry()` with retry mechanism for failed downloads
 - Added `clean_duplicate_files()` to handle .1, .2, .3 duplicate files created by failed downloads
@@ -21,6 +22,7 @@ This document describes the fixes implemented for common Dark OS issues found in
 **Problem**: DXVK installation fails with no clear error messages.
 
 **Fix**:
+
 - Enhanced DXVK installation in `wine_container()` function with better error handling
 - Added logging to `/tmp/dxvk_install.log` for troubleshooting
 - Implemented alternative DXVK installation method if primary fails
@@ -33,6 +35,7 @@ This document describes the fixes implemented for common Dark OS issues found in
 **Problem**: Dark OS fails to start, shows "can't open display" error.
 
 **Fix**:
+
 - Created `diagnose-startup.py` comprehensive diagnostic tool
 - Enhanced `start_darkos()` function with better X11 server handling
 - Added display connection testing and retry mechanisms
@@ -47,6 +50,7 @@ This document describes the fixes implemented for common Dark OS issues found in
 **Problem**: Install Font tweak not working.
 
 **Fix**:
+
 - Created `fix-fonts.py` tool to handle font installation issues
 - Multiple installation methods: winetricks, manual copy, registry entries
 - Support for copying system fonts from Android/Termux
@@ -59,6 +63,7 @@ This document describes the fixes implemented for common Dark OS issues found in
 **Problem**: Steam indefinitely updating / Steamcmd updating forever.
 
 **Fix**:
+
 - Created `fix-steam.py` tool with comprehensive Steam fixes
 - Steam cache clearing functionality
 - Registry fixes for update loops
@@ -73,6 +78,7 @@ This document describes the fixes implemented for common Dark OS issues found in
 **Problem**: Non-English paths cause issues with file operations.
 
 **Fix**:
+
 - Added `handle_encoding_issues()` function for proper path encoding
 - Enhanced archive extraction to handle non-English filenames
 - UTF-8 encoding support with fallback to ASCII
@@ -82,6 +88,7 @@ This document describes the fixes implemented for common Dark OS issues found in
 ### 7. General Improvements
 
 **Additional Enhancements**:
+
 - Added system diagnostics menu option in main menu
 - Enhanced error messages throughout the codebase
 - Better Wine prefix creation with error handling
@@ -93,11 +100,13 @@ This document describes the fixes implemented for common Dark OS issues found in
 ### Running Diagnostic Tools
 
 1. **For startup issues**:
+
    ```bash
    python3 diagnose-startup.py
    ```
 
 2. **For font problems**:
+
    ```bash
    python3 fix-fonts.py
    ```
@@ -110,6 +119,7 @@ This document describes the fixes implemented for common Dark OS issues found in
 ### Using Enhanced Dark OS
 
 The main `darkos.py` now includes:
+
 - Option 5 in main menu for system diagnostics
 - Improved error handling and recovery
 - Better installation process with retry mechanisms
@@ -135,21 +145,25 @@ To get the fixes:
 ## Technical Details
 
 ### Archive Verification
+
 - Uses zipfile.testzip() for ZIP files
 - Validates TAR files by reading member list
 - Implements checksum verification for critical files
 
 ### Display Management
+
 - Multi-attempt X11 server startup
 - Display accessibility testing
 - Automatic display selection and fallback
 
 ### Wine Integration
+
 - Better process lifecycle management
 - Registry fix applications
 - Comprehensive error logging
 
 ### Font System
+
 - Multiple installation pathways
 - System font discovery and copying
 - Registry-based font registration
@@ -168,6 +182,7 @@ To add more fixes:
 ## Support
 
 For additional help:
+
 - Check the GitHub issues for similar problems
 - Run diagnostic tools to identify specific issues
 - Check system logs and Dark OS generated logs
