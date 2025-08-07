@@ -6,8 +6,9 @@ import zipfile
 import tarfile
 # Optional progress bar support; fallback if tqdm is unavailable
 try:
-    from tqdm import tqdm
-except ImportError:
+    _tqdm_mod = __import__('tqdm')
+    tqdm = _tqdm_mod.tqdm
+except Exception:
     class tqdm:
         def __init__(self, *args, **kwargs): pass
         def update(self, n): pass
